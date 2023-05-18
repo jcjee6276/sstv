@@ -1,6 +1,6 @@
 package com.example.sstv.common;
 
-import com.example.sstv.streaming.User;
+import com.example.sstv.user.User;
 import jakarta.servlet.http.Cookie;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;

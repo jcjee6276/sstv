@@ -1,8 +1,8 @@
-package com.example.sstv.streaming.restController;
+package com.example.sstv.streaming;
 
 import com.example.sstv.common.Data;
 import com.example.sstv.common.NodeCookie;
-import com.example.sstv.streaming.User;
+import com.example.sstv.user.User;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;

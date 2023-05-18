@@ -1,4 +1,4 @@
-package com.example.sstv.streaming;
+package com.example.sstv.user;
 
 import java.util.Date;
 

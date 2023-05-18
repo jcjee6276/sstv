@@ -173,7 +173,7 @@ public class UserService {
                 user.seteMail(email);
                 user.setUserName(name);
 
-                addSNSUser(user);
+//                addSNSUser(user);
             }
 
         }catch (Exception e){
