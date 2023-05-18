@@ -1,4 +1,4 @@
-package com.example.sstv.user;
+package com.example.sstv.streaming;
 
 public class User {
     private String userId;

@@ -1,6 +1,6 @@
-package com.example.sstv.user.DAO;
+package com.example.sstv.streaming.DAO;
 
-import com.example.sstv.user.User;
+import com.example.sstv.streaming.User;
 import org.apache.ibatis.annotations.Mapper;
 
 
