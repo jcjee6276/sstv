@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!-- type에는 사용하려는 domain의 경로를 적어여한다. -->
+<mapper namespace="com.example.sstv.community.DAO.CommunityDAO">
+
+
+    <resultMap id="communitySelectMap" type="com.example.sstv.community.Community">
+        <result property="writingNo" 			column="writing_no" 			jdbcType="INT"/>
+        <result property="hostUserId" 		column="host_user_id" 			jdbcType="VARCHAR" />
+        <result property="guestUserId" 		column="guest_user_id" 			jdbcType="VARCHAR" />
+        <result property="title" 		column="title" 			jdbcType="VARCHAR" />
+        <result property="regDate" 		column="reg_date" 			jdbcType="TIMESTAMP" />
+        <result property="content" 		column="content" 			jdbcType="TEXT" />
+    </resultMap>
+
+
+
+    <select 	id="getWriting"	parameterType="Community"	resultMap="communitySelectMap">
+        SELECT
+        *
+        FROM writing
+        where writing_no = #{value}
+    </select>
+
+</mapper>

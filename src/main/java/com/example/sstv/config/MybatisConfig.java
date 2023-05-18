@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Bean;
 import javax.sql.DataSource;
 
 @Configurable
-@MapperScan(value = "com.example.demo")
+@MapperScan(value = "com.example")
 public class MybatisConfig {
 
     @Value("${mybatis.mapper-locations}")
