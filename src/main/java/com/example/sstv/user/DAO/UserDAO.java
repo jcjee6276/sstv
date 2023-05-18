@@ -1,7 +1,10 @@
 package com.example.sstv.user.DAO;
 
 import com.example.sstv.user.User;
+import com.example.sstv.common.Search;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 
 /*
@@ -9,6 +12,14 @@ import org.apache.ibatis.annotations.Mapper;
 * */
 @Mapper
 public interface UserDAO {
+
     void addUser(User user);
     User getUser(String userId);
+    User findId(String phone);
+    User findPasswd(String phone);
+    List<User> getAdminUserlist(Search search);
+    void removeUserStart(User user);
+    void removeUserCancle(User user);
+    void updateUser(User user);
+
 }

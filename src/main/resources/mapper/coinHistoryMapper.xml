@@ -9,7 +9,7 @@
 <mapper namespace="com.example.sstv.user.DAO.UserDAO">
 
 
-    <resultMap id="userSelectMap" type="com.example.sstv.user.User">
+    <resultMap id="coinSelectMap" type="com.example.sstv.user.CoinHistory">
         <result property="userId" 			column="user_id" 			jdbcType="VARCHAR" />
         <result property="password" 		column="password" 			jdbcType="VARCHAR" />
         <result property="profilePhoto"     column="profile_photo"      jdbcType="VARCHAR" />
@@ -33,13 +33,6 @@
         INSERT
         INTO user( user_id , password, profile_photo, user_nickname, user_name, date_birth, email, phone, sign_date, withdrawal, roll, coin, accumulated_viewers, total_streaming_accumulated_time, st_roll, user_type)
         VALUES	 (	#{userId} , #{password} , #{profilePhoto} , #{user_nickname} , #{user_name} , #{date_birth} , #{email} , #{phone} , NOW() , 0 , 'user' , 0 , 0 , NULL , 0 , #{userType})
-    </insert>
-
-    <!-- 회원 가입. -->
-    <insert 	id="addSNSUser"		parameterType="com.example.sstv.user.User" >
-        INSERT
-        INTO user( user_id , password, profile_photo, user_nickname, user_name, date_birth, email, phone, sign_date, withdrawal, roll, coin, accumulated_viewers, total_streaming_accumulated_time, st_roll, user_type)
-        VALUES	 (	#{userId} , #{userId} , #{profilePhoto} , #{user_nickname} , #{user_name} , #{date_birth} , #{email} , #{phone} , NOW() , 0 , 'user' , 0 , 0 , NULL , 0 , #{userType})
     </insert>
 
     <!-- 회원 정보 조회. -->
@@ -89,7 +82,7 @@
             withdrawal = 1,
             withdrawal_date = NOW()
         </set>
-            WHERE user_id = #{userId}
+        WHERE user_id = #{userId}
     </update>
 
     <!-- 회원 탈퇴 취소 -->
