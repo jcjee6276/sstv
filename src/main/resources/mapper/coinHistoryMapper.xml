@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!-- type에는 사용하려는 domain의 경로를 적어여한다. -->
+<mapper namespace="com.example.sstv.user.DAO.UserDAO">
+
+
+    <resultMap id="coinSelectMap" type="com.example.sstv.user.CoinHistory">
+        <result property="userId" 			column="user_id" 			jdbcType="VARCHAR" />
+        <result property="password" 		column="password" 			jdbcType="VARCHAR" />
+        <result property="profilePhoto"     column="profile_photo"      jdbcType="VARCHAR" />
+        <result property="userNickname"     column="user_nickname"      jdbcType="VARCHAR" />
+        <result property="userName"         column="user_name"          jdbcType="VARCHAR" />
+        <result property="dateBirth"        column="date_birth"         jdbcType="VARCHAR" />
+        <result property="eMail"            column="email"              jdbcType="VARCHAR" />
+        <result property="phone"            column="phone"              jdbcType="VARCHAR" />
+        <result property="signDate"         column="sign_date"          jdbcType="TIMESTAMP" />
+        <result property="withdrawal"       column="withdrawal"         jdbcType="INT" />
+        <result property="roll"             column="roll"               jdbcType="VARCHAR" />
+        <result property="coin"             column="coin"               jdbcType="INT" />
+        <result property="accumulatedViewers"      column="accumulated_viewers"     jdbcType="INT" />
+        <result property="totalStreamingAccumulatedTime"     column="total_streaming_accumulated_time"      jdbcType="INT" />
+        <result property="stRoll"       column="st_roll" jdbcType="INT" />
+        <result property="userType"     column="user_type"  jdbcType="INT" />
+    </resultMap>
+
+    <!-- 회원 가입. -->
+    <insert 	id="addUser"		parameterType="com.example.sstv.user.User" >
+        INSERT
+        INTO user( user_id , password, profile_photo, user_nickname, user_name, date_birth, email, phone, sign_date, withdrawal, roll, coin, accumulated_viewers, total_streaming_accumulated_time, st_roll, user_type)
+        VALUES	 (	#{userId} , #{password} , #{profilePhoto} , #{user_nickname} , #{user_name} , #{date_birth} , #{email} , #{phone} , NOW() , 0 , 'user' , 0 , 0 , NULL , 0 , #{userType})
+    </insert>
+
+    <!-- 회원 정보 조회. -->
+    <select 	id="getUser"	parameterType="string"	resultMap="userSelectMap">
+        SELECT
+        profile_photo, user_nickname, user_name, date_birth, email, phone, sign_date
+        FROM user
+        WHERE user_id = #{value}
+    </select>
+
+    <!-- 아이디 찾기. -->
+    <select 	id="findId"	parameterType="string"	resultMap="userSelectMap">
+        SELECT
+        user_id
+        FROM user
+        WHERE phone = #{phone}
+    </select>
+
+    <!-- 비밀번호 찾기. -->
+    <select 	id="findPasswd"	parameterType="string"	resultMap="userSelectMap">
+        SELECT
+        passwd
+        FROM user
+        WHERE phone = #{phone}
+    </select>
+
+    <!-- 관리자의 전체 회원 조회 -->
+    <select id="getAdminUserlist" parameterType="com.example.sstv.common.Search" >
+        SELECT *
+        FROM user
+        <if test="searchCondition != null">
+            <where>
+                <if test="searchCondition == 0 and searchKeyword !='' ">
+                    user_name = #{searchKeyword}
+                </if>
+                <if test="searchCondition == 1 and searchKeyword !='' ">
+                    user_nickname = #{searchKeyword}
+                </if>
+            </where>
+        </if>
+    </select>
+
+    <!-- 회원 탈퇴 절차 시작. -->
+    <update id="removeUserStart" parameterType="com.example.sstv.user.User" >
+        UPDATE user
+        <set>
+            withdrawal = 1,
+            withdrawal_date = NOW()
+        </set>
+        WHERE user_id = #{userId}
+    </update>
+
+    <!-- 회원 탈퇴 취소 -->
+    <update id="removeUserCancle" parameterType="com.example.sstv.user.User" >
+        UPDATE user
+        <set>
+            withdrawal = 0,
+            withdrawal_date = NULL
+        </set>
+        WHERE user_id = #{userId}
+    </update>
+
+    <!-- 회원 정보 수정 -->
+    <update id="updateUser" parameterType="com.example.sstv.user.User" >
+        UPDATE user
+        <set>
+            <if test="userType == 0">
+                password = #{password},
+            </if>
+            <if test="userType == 1">
+                password = #{userId},
+            </if>
+            profile_photo = #{profilePhoto},
+            user_nickname = #{userNickname},
+            email = #{eMail}
+        </set>
+        WHERE user_id = #{userId}
+    </update>
+
+</mapper>

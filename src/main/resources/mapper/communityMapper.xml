@@ -10,17 +10,17 @@
 
 
     <resultMap id="communitySelectMap" type="com.example.sstv.community.Community">
-        <result property="writingNo" 			column="writing_no" 			jdbcType="NUMERIC"/>
+        <result property="writingNo" 			column="writing_no" 			jdbcType="INT"/>
         <result property="hostUserId" 		column="host_user_id" 			jdbcType="VARCHAR" />
         <result property="guestUserId" 		column="guest_user_id" 			jdbcType="VARCHAR" />
         <result property="title" 		column="title" 			jdbcType="VARCHAR" />
         <result property="regDate" 		column="reg_date" 			jdbcType="TIMESTAMP" />
-        <result property="content" 		column="content" 			jdbcType="VARCHAR" />
+        <result property="content" 		column="content" 			jdbcType="TEXT" />
     </resultMap>
 
 
 
-    <select id="getWriting"	parameterType="com.example.sstv.community.Community"	resultMap="communitySelectMap">
+    <select 	id="getWriting"	parameterType="Community"	resultMap="communitySelectMap">
         SELECT
         *
         FROM writing
