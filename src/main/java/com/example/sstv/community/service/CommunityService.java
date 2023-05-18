@@ -18,4 +18,16 @@ public class CommunityService {
         return communityDao.getWriting(writingNo);
     }
 
+    public Community addWriting(Community community) {
+        return communityDao.addWriting(community);
+    }
+
+    public void deleteWriting(int writingNo) {
+        communityDao.deleteWriting(writingNo);
+    }
+
+    public void updateWriting(Community community){
+         communityDao.updateWriting(community);
+    }
+
 }
