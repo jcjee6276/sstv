@@ -1,5 +1,6 @@
 package com.example.sstv.community.DAO;
 
+import com.example.sstv.community.Comments;
 import com.example.sstv.community.Community;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -14,4 +15,6 @@ public interface CommunityDAO {
     void deleteWriting(int writingNo);
 
     void updateWriting(Community community);
+
+    Comments addComments(Comments comments);
 }

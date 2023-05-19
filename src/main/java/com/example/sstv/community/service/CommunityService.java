@@ -1,5 +1,6 @@
 package com.example.sstv.community.service;
 
+import com.example.sstv.community.Comments;
 import com.example.sstv.community.Community;
 import com.example.sstv.community.DAO.CommunityDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,10 @@ public class CommunityService {
 
     public void updateWriting(Community community){
          communityDao.updateWriting(community);
+    }
+
+    public Comments addComments(Comments comments){
+        return communityDao.addComments(comments);
     }
 
 }
