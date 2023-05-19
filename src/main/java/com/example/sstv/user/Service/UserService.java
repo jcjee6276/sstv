@@ -5,6 +5,7 @@ import com.example.sstv.user.DAO.UserDAO;
 import com.example.sstv.user.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -15,53 +16,62 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+@Service
 public class UserService {
     private UserDAO userDAO;
 
+//    @Autowired
+//    public void addUser(User user) {
+//        userDAO.addUser(user);
+//    }
+
     @Autowired
-    void addUser(User user) throws Exception {
+    public UserService(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
+    public void addUser(User user){
         userDAO.addUser(user);
     }
-    User getUser(String userId) throws Exception {
+    public User getUser(String userId) {
         return userDAO.getUser(userId);
     }
-    User findId(String phone) throws Exception {
+    public User findId(String phone) {
         return userDAO.findId(phone);
     }
-    User findPasswd(String phone) throws Exception {
-        return userDAO.findPasswd(phone);
+    public void findPasswd(User user) {
+        userDAO.findPasswd(user);
     }
-    List<User> getAdminUserlist(Search search) throws Exception {
+    public List<User> getAdminUserlist(Search search) {
         return userDAO.getAdminUserlist(search);
     }
-    void removeUserStart(User user) throws Exception {
+    public void removeUserStart(User user) {
         userDAO.removeUserStart(user);
     }
-    void removeUserCancle(User user) throws Exception {
+    public void removeUserCancle(User user) {
         userDAO.removeUserCancle(user);
     }
-    void updateUser(User user) throws Exception {
+    public void updateUser(User user) {
         userDAO.updateUser(user);
     }
-    boolean checkUserId(String userId) throws Exception {
+    public boolean checkUserId(String userId) {
         boolean result=true;
         User user=userDAO.getUser(userId);
         if(user != null) {
-            result=false;
+            result=false; //--> 사용할 수 있을 경우 true
         }
         return result;
     }
-    boolean checkUserNickname(String userNickname) throws Exception {
+    public boolean checkUserNickname(String userNickname) {
         boolean result=true;
         User user=userDAO.getUser(userNickname);
         if(user != null) {
-            result=false;
+            result=false; //--> 사용할 수 있을 경우 true
         }
         return result;
     }
 
-    String getAccessToken(String authorize_code) throws IOException {
+
+    public String getAccessToken(String authorize_code) throws IOException {
         System.out.println("토큰 주세요..");
         String access_Token = "";
         String refresh_Token = "";
@@ -79,12 +89,13 @@ public class UserService {
 
         // HTTP 요청에 필요한 파라미터 설정
         String postParams = "grant_type=authorization_code" +
-                "&client_id=" + "EhqyhXXoypPkdaw2JXOK" +
-                "&redirect_uri=" + "http://192.168.0.21:7080/user/addSNSUser" +
+                "&client_id=" + "oxyovmQ_xk_uAaUdHUKu" +
+                "&redirect_uri=" + "http://192.168.0.21:8080/user/addSNSUser" +
                 "&code=" + authorize_code +
-                "&client_secret=" + "Go7BtZjVkI";
+                "&client_secret=" + "uFi6q1_u5O";
         con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
-
+        
+        System.out.println("전달 파라미터 확인.. :: "+postParams);
         // HTTP 요청 본문에 파라미터 추가
         con.setDoOutput(true);
         DataOutputStream wr = new DataOutputStream(con.getOutputStream());
@@ -119,7 +130,7 @@ public class UserService {
         return access_Token;
     }
 
-    Map<String, Object> getUserInfo(String access_Token) throws Exception {
+    public Map<String, Object> getUserInfo(String access_Token) throws Exception {
 
         System.out.println("네이버야.. 정보.. 줄 수 있겠니..?");
         Map<String, Object> userInfo = new HashMap<>();
@@ -173,12 +184,14 @@ public class UserService {
                 user.seteMail(email);
                 user.setUserName(name);
 
-                addSNSUser(user);
+                userDAO.addSNSUser(user);
+
             }
 
         }catch (Exception e){
             System.out.println(e);
         }
+
 
         return userInfo;
     }

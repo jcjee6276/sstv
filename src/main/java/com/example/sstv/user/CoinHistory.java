@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class CoinHistory {
     private int coinHistoryNo;
-    private String userId;
+    private User userId;
     private int ticketProdNo;
     private int prodName;
     private int price;
@@ -30,11 +30,11 @@ public class CoinHistory {
         this.coinHistoryNo = coinHistoryNo;
     }
 
-    public String getUserId() {
+    public User getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(User userId) {
         this.userId = userId;
     }
 

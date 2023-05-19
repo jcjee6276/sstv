@@ -14,9 +14,10 @@ import java.util.List;
 public interface UserDAO {
 
     void addUser(User user);
+    void addSNSUser(User user);
     User getUser(String userId);
     User findId(String phone);
-    User findPasswd(String phone);
+    void findPasswd(User user);
     List<User> getAdminUserlist(Search search);
     void removeUserStart(User user);
     void removeUserCancle(User user);
