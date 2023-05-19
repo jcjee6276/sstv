@@ -19,13 +19,13 @@
         <result property="eMail"            column="email"              jdbcType="VARCHAR" />
         <result property="phone"            column="phone"              jdbcType="VARCHAR" />
         <result property="signDate"         column="sign_date"          jdbcType="TIMESTAMP" />
-        <result property="withdrawal"       column="withdrawal"         jdbcType="INT" />
+        <result property="withdrawal"       column="withdrawal"         jdbcType="NUMERIC" />
         <result property="roll"             column="roll"               jdbcType="VARCHAR" />
-        <result property="coin"             column="coin"               jdbcType="INT" />
-        <result property="accumulatedViewers"      column="accumulated_viewers"     jdbcType="INT" />
-        <result property="totalStreamingAccumulatedTime"     column="total_streaming_accumulated_time"      jdbcType="INT" />
-        <result property="stRoll"       column="st_roll" jdbcType="INT" />
-        <result property="userType"     column="user_type"  jdbcType="INT" />
+        <result property="coin"             column="coin"               jdbcType="NUMERIC" />
+        <result property="accumulatedViewers"      column="accumulated_viewers"     jdbcType="NUMERIC" />
+        <result property="totalStreamingAccumulatedTime"     column="total_streaming_accumulated_time"      jdbcType="NUMERIC" />
+        <result property="stRoll"       column="st_roll" jdbcType="NUMERIC" />
+        <result property="userType"     column="user_type"  jdbcType="NUMERIC" />
     </resultMap>
 
     <!-- 회원 가입. -->
