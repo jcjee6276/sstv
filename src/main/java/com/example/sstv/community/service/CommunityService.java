@@ -6,6 +6,11 @@ import com.example.sstv.community.DAO.CommunityDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class CommunityService {
     private final CommunityDAO communityDao;
@@ -19,8 +24,8 @@ public class CommunityService {
         return communityDao.getWriting(writingNo);
     }
 
-    public Community addWriting(Community community) {
-        return communityDao.addWriting(community);
+    public void addWriting(Community community) {
+         communityDao.addWriting(community);
     }
 
     public void deleteWriting(int writingNo) {
@@ -31,8 +36,20 @@ public class CommunityService {
          communityDao.updateWriting(community);
     }
 
-    public Comments addComments(Comments comments){
-        return communityDao.addComments(comments);
+    public void addComments(Comments comments){
+        communityDao.addComments(comments);
+    }
+
+    public Map<String, Object> getCommentsList(int writingNo){
+        List<Comments> list = (List<Comments>) communityDao.getCommentsList(writingNo);
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        map.put("list", list);
+        return map;
+    }
+
+    public void deleteComments(int writingNo){
+        communityDao.deleteComments(writingNo);
     }
 
 }
