@@ -1,6 +1,6 @@
 package com.example.sstv.common;
 
-import com.example.sstv.user.User;
+
 import jakarta.servlet.http.Cookie;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
@@ -13,28 +13,28 @@ import org.springframework.web.client.RestTemplate;
  */
 public class NodeCookie {
 
-    public Cookie getNodeCookie(User user) {
-        String url = "http://localhost:3000/addCookie";
-
-
-        RestTemplate restTemplate = new RestTemplate();
-
-        //set Header
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        Data data = new Data("success", user);
-
-        HttpEntity<Data> httpEntity = new HttpEntity<>(data, headers);
-
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
-
-        String NSESSIONID = response.getBody();
-
-        Cookie cookie = createCookie(NSESSIONID);
-
-        return cookie;
-    }
+//    public Cookie getNodeCookie(User user) {
+//        String url = "http://localhost:3000/addCookie";
+//
+//
+//        RestTemplate restTemplate = new RestTemplate();
+//
+//        //set Header
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//        Data data = new Data("success", user);
+//
+//        HttpEntity<Data> httpEntity = new HttpEntity<>(data, headers);
+//
+//        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+//
+//        String NSESSIONID = response.getBody();
+//
+//        Cookie cookie = createCookie(NSESSIONID);
+//
+//        return cookie;
+//    }
 
     /*
     * 1. spring에서 로그아웃시 node에 로그아웃하는 유저의 cookie이름을 보냄
