@@ -10,10 +10,16 @@ public class Data {
 
     private String result;
     private Object data;
+    private Object data2;
 
     public Data(String result, Object data) {
         this.result = result;
         this.data = data;
+    }
+    public Data(String result, Object data, Object data2) {
+        this.result = result;
+        this.data = data;
+        this.data2 = data2;
     }
 
     public String getResult() {

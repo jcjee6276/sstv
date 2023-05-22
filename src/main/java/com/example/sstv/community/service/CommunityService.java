@@ -52,4 +52,12 @@ public class CommunityService {
         communityDao.deleteComments(writingNo);
     }
 
+    public Map<String, Object> getWritingList() {
+        List<Community> list = (List<Community>) communityDao.getWritingList();
+        int count = communityDao.getWritingCount();
+        Map<String, Object> map = new HashMap<String,Object>();
+        map.put("list", list);
+        map.put("count", count);
+        return map;
+    }
 }

@@ -88,5 +88,12 @@ public class communityRestController {
         return data;
     }
 
+    @GetMapping(value="writingList") // User 받아서 writinglist 걸러내기 @pathvariable userid 추가
+    public Data getWritingList() {
+        Map<String, Object> map = communityService.getWritingList();
+
+        Data data = new Data("success", map.get("count"), map.get("list"));
+        return data;
+    }
 
 }

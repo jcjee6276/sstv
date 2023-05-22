@@ -23,4 +23,8 @@ public interface CommunityDAO {
     List<Comments> getCommentsList(int writingNo);
 
     void deleteComments(int commentsNo);
+
+    List<Community> getWritingList();
+
+    int getWritingCount();
 }
