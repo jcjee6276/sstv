@@ -36,6 +36,20 @@
         WHERE writing_no = #{writing_no}
     </select>
 
+    <select 	id="getWritingList"	parameterType="com.example.sstv.community.Community"	resultMap="communitySelectMap">
+        SELECT
+        *
+        FROM WRITING
+
+    </select>
+
+    <select 	id="getWritingCount"	resultType="int">
+        SELECT
+        COUNT(*) AS writing_no
+        FROM WRITING
+
+    </select>
+
     <delete  id="deleteWriting" >
         DELETE from WRITING where writing_no = #{writing_no}
     </delete>
