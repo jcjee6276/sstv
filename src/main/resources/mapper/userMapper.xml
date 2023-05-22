@@ -8,7 +8,6 @@
 <!-- type에는 사용하려는 domain의 경로를 적어여한다. -->
 <mapper namespace="com.example.sstv.user.DAO.UserDAO">
 
-
     <resultMap id="userSelectMap" type="com.example.sstv.user.User">
         <result property="userId" 			column="user_id" 			jdbcType="VARCHAR" />
         <result property="password" 		column="passwd" 			jdbcType="VARCHAR" />
