@@ -11,7 +11,7 @@
 
     <resultMap id="userSelectMap" type="com.example.sstv.user.User">
         <result property="userId" 			column="user_id" 			jdbcType="VARCHAR" />
-        <result property="password" 		column="password" 			jdbcType="VARCHAR" />
+        <result property="password" 		column="passwd" 			jdbcType="VARCHAR" />
         <result property="profilePhoto"     column="profile_photo"      jdbcType="VARCHAR" />
         <result property="userNickname"     column="user_nickname"      jdbcType="VARCHAR" />
         <result property="userName"         column="user_name"          jdbcType="VARCHAR" />
@@ -31,22 +31,22 @@
     <!-- 회원 가입. -->
     <insert 	id="addUser"		parameterType="com.example.sstv.user.User" >
         INSERT
-        INTO user( user_id , password, profile_photo, user_nickname, user_name, date_birth, email, phone, sign_date, withdrawal, roll, coin, accumulated_viewers, total_streaming_accumulated_time, st_roll, user_type)
-        VALUES	 (	#{userId} , #{password} , #{profilePhoto} , #{user_nickname} , #{user_name} , #{date_birth} , #{email} , #{phone} , NOW() , 0 , 'user' , 0 , 0 , NULL , 0 , #{userType})
+        INTO USER( user_id , passwd, profile_photo, user_nickname, user_name, date_birth, email, phone, sign_date, withdrawal, roll, coin, accumulated_viewers, total_streaming_accumulated_time, st_roll, user_type)
+        VALUES	 (	#{userId} , #{password} , #{profilePhoto} , #{userNickname} , #{userName} , #{dateBirth} , #{eMail} , #{phone} , NOW() , 0 , 'user' , 0 , 0 , NULL , 0 , 0)
     </insert>
 
     <!-- 회원 가입. -->
     <insert 	id="addSNSUser"		parameterType="com.example.sstv.user.User" >
         INSERT
-        INTO user( user_id , password, profile_photo, user_nickname, user_name, date_birth, email, phone, sign_date, withdrawal, roll, coin, accumulated_viewers, total_streaming_accumulated_time, st_roll, user_type)
-        VALUES	 (	#{userId} , #{userId} , #{profilePhoto} , #{user_nickname} , #{user_name} , #{date_birth} , #{email} , #{phone} , NOW() , 0 , 'user' , 0 , 0 , NULL , 0 , #{userType})
+        INTO USER( user_id , passwd, profile_photo, user_nickname, user_name, date_birth, email, phone, sign_date, withdrawal, roll, coin, accumulated_viewers, total_streaming_accumulated_time, st_roll, user_type)
+        VALUES	 (	#{userId} , #{userId} , #{profilePhoto} , #{userNickname} , #{userName} , #{dateBirth} , #{eMail} , #{phone} , NOW() , 0 , 'user' , 0 , 0 , NULL , 0 , 1)
     </insert>
 
     <!-- 회원 정보 조회. -->
     <select 	id="getUser"	parameterType="string"	resultMap="userSelectMap">
         SELECT
-        profile_photo, user_nickname, user_name, date_birth, email, phone, sign_date
-        FROM user
+        user_id, passwd, profile_photo, user_nickname, user_name, date_birth, email, phone, sign_date, roll, coin
+        FROM USER
         WHERE user_id = #{value}
     </select>
 
@@ -54,22 +54,23 @@
     <select 	id="findId"	parameterType="string"	resultMap="userSelectMap">
         SELECT
         user_id
-        FROM user
+        FROM USER
         WHERE phone = #{phone}
     </select>
 
-    <!-- 비밀번호 찾기. -->
-    <select 	id="findPasswd"	parameterType="string"	resultMap="userSelectMap">
-        SELECT
-        passwd
-        FROM user
-        WHERE phone = #{phone}
-    </select>
+    <!-- 비밀번호 찾기 요청 후 변경 -->
+    <update 	id="findPasswd"	parameterType="com.example.sstv.user.User">
+        UPDATE USER
+        <set>
+            passwd = #{password}
+        </set>
+        WHERE user_id = #{userId}
+    </update>
 
     <!-- 관리자의 전체 회원 조회 -->
-    <select id="getAdminUserlist" parameterType="com.example.sstv.common.Search" >
-        SELECT *
-        FROM user
+    <select id="getAdminUserlist" parameterType="com.example.sstv.common.Search" resultMap="userSelectMap">
+        SELECT user_name, user_nickname, date_birth, sign_date
+        FROM USER
         <if test="searchCondition != null">
             <where>
                 <if test="searchCondition == 0 and searchKeyword !='' ">
@@ -84,7 +85,7 @@
 
     <!-- 회원 탈퇴 절차 시작. -->
     <update id="removeUserStart" parameterType="com.example.sstv.user.User" >
-        UPDATE user
+        UPDATE USER
         <set>
             withdrawal = 1,
             withdrawal_date = NOW()
@@ -94,7 +95,7 @@
 
     <!-- 회원 탈퇴 취소 -->
     <update id="removeUserCancle" parameterType="com.example.sstv.user.User" >
-        UPDATE user
+        UPDATE USER
         <set>
             withdrawal = 0,
             withdrawal_date = NULL
@@ -104,13 +105,13 @@
 
     <!-- 회원 정보 수정 -->
     <update id="updateUser" parameterType="com.example.sstv.user.User" >
-        UPDATE user
+        UPDATE USER
         <set>
             <if test="userType == 0">
-                password = #{password},
+                passwd = #{password},
             </if>
             <if test="userType == 1">
-                password = #{userId},
+                passwd = #{userId},
             </if>
             profile_photo = #{profilePhoto},
             user_nickname = #{userNickname},
