@@ -20,10 +20,11 @@
         <result property="phone"            column="phone"              jdbcType="VARCHAR" />
         <result property="signDate"         column="sign_date"          jdbcType="TIMESTAMP" />
         <result property="withdrawal"       column="withdrawal"         jdbcType="NUMERIC" />
+        <result property="withdrawalDate"   column="withdrawal_date"    jdbcType="TIMESTAMP"/>
         <result property="roll"             column="roll"               jdbcType="VARCHAR" />
         <result property="coin"             column="coin"               jdbcType="NUMERIC" />
         <result property="accumulatedViewers"      column="accumulated_viewers"     jdbcType="NUMERIC" />
-        <result property="totalStreamingAccumulatedTime"     column="total_streaming_accumulated_time"      jdbcType="NUMERIC" />
+        <result property="totalStreamingAccumulatedTime"     column="total_streaming_accumulated_time"      jdbcType="TIME" />
         <result property="stRoll"       column="st_roll" jdbcType="NUMERIC" />
         <result property="userType"     column="user_type"  jdbcType="NUMERIC" />
     </resultMap>
@@ -45,7 +46,7 @@
     <!-- 회원 정보 조회. -->
     <select 	id="getUser"	parameterType="string"	resultMap="userSelectMap">
         SELECT
-        user_id, passwd, profile_photo, user_nickname, user_name, date_birth, email, phone, sign_date, roll, coin
+        *
         FROM USER
         WHERE user_id = #{value}
     </select>

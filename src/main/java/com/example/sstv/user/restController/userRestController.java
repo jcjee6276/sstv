@@ -3,6 +3,7 @@ package com.example.sstv.user.restController;
 import com.example.sstv.common.Data;
 import com.example.sstv.common.NodeCookie;
 import com.example.sstv.common.Search;
+import com.example.sstv.fan.Service.FanService;
 import com.example.sstv.user.Service.UserService;
 import com.example.sstv.user.User;
 import jakarta.servlet.http.Cookie;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -21,9 +24,12 @@ import java.util.Random;
 public class userRestController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private FanService fanService;
 
     @Autowired
-    public userRestController(UserService userService) { this.userService = userService; }
+    public userRestController(UserService userService) {
+        this.userService = userService;}
 
     @PostMapping(value="addUser")
     public Data addUser(@RequestBody User user){
@@ -75,13 +81,20 @@ public class userRestController {
 
         User info = userService.getUser(user.getUserId());
         System.out.println(info.getUserId());
+        System.out.println("blackList..? 잘 나오니..?" +fanService.getBlackList(info.getUserId()));
+        // 해당 회원의 blackList
+        //fanService.getBlacklist(info.getUserId());
+
         if(user.getPassword().equals(info.getPassword())){
+            //회원 정보&블랙리스트 세션에 저장
             session.setAttribute("user", info);
+            session.setAttribute("user", fanService.getBlackList(info.getUserId()));
 //            Cookie cookie = nodeCookie.getNodeCookie(info);
 //            response.addCookie(cookie);
         }
+//        List<String> blackList = fanService.getBlackList(info.getUserId()).getBlackUser();
+        //로그인되며, 회원탈퇴 절차 취소
         userService.removeUserCancle(user);
-
 
         Data data = new Data("success", info);
         return data;
