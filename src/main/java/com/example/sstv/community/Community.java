@@ -1,6 +1,7 @@
 package com.example.sstv.community;
 
 import java.util.Date;
+import java.util.List;
 
 public class Community {
     private int writingNo;
@@ -14,6 +15,17 @@ public class Community {
     }
 
     private String hostUserId;
+
+    //private int comment
+    public List<Comments> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comments> comments) {
+        this.comments = comments;
+    }
+
+    private List<Comments> comments;
 
     public String getHostUserId() {
         return hostUserId;
