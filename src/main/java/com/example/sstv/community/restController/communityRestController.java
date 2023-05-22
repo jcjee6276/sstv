@@ -1,12 +1,14 @@
 package com.example.sstv.community.restController;
 
 import com.example.sstv.common.Data;
+import com.example.sstv.community.Comments;
 import com.example.sstv.community.Community;
 import com.example.sstv.community.service.CommunityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-
+import java.util.Map;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/community/*")
@@ -28,12 +30,11 @@ public class communityRestController {
         return data;
     }
 
-    @GetMapping(value="addWriting")
-    public Data addWriting(Community community) {
-        community.setGuestUserId("user1");
-        community.setHostUserId("user3");
-        community.setTitle("test111");
-        community.setContent("qwer222");
+    @PostMapping(value="addWriting", consumes = "application/json;")
+    public Data addWriting(@RequestBody Community community) {
+        System.out.println("test community : "+community);
+        community.setHostUserId("user1");
+        community.setGuestUserId("user3");
         communityService.addWriting(community);
         Data data = new Data("success", "성공");
         return data;
@@ -63,6 +64,29 @@ public class communityRestController {
 
     }
 
+    @PostMapping(value="addComments", consumes = "application/json;")
+    public Data addComments(@RequestBody Comments comments) {
+        System.out.println("test : "+ comments);
+
+        communityService.addComments(comments);
+
+        Data data = new Data("success", "댓글 추가 성공");
+        return data;
+    }
+
+    @GetMapping(value="getCommentsList/{writingNo}")
+    public Data getCommentsList(@PathVariable int writingNo){
+        Map<String, Object> map = communityService.getCommentsList(writingNo);
+        Data data = new Data("success", map.get("list"));
+        return data;
+    }
+
+    @GetMapping(value="deleteComments/{commentsNo}")
+    public Data deleteComments(@PathVariable int commentsNo ){
+        communityService.deleteComments(commentsNo);
+        Data data = new Data("success", "댓글 삭제 성공");
+        return data;
+    }
 
 
 }

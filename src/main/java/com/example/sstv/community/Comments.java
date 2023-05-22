@@ -3,6 +3,15 @@ package com.example.sstv.community;
 import java.util.Date;
 
 public class Comments {
+    public Community getCommunity() {
+        return community;
+    }
+
+    public void setCommunity(Community community) {
+        this.community = community;
+    }
+
+    private Community community;
     private int commentsNo;
 
     public int getCommentsNo() {
@@ -21,11 +30,11 @@ public class Comments {
         this.commentsUserId = commentsUserId;
     }
 
-    public Community getWritingNo() {
+    public int getWritingNo() {
         return writingNo;
     }
 
-    public void setWritingNo(Community writingNo) {
+    public void setWritingNo(int writingNo) {
         this.writingNo = writingNo;
     }
 
@@ -54,7 +63,7 @@ public class Comments {
     }
 
     private String commentsUserId;
-    private Community writingNo;
+    private int writingNo;
     private int replayNo;
     private String content;
     private Date regDate;

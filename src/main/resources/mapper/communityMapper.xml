@@ -18,14 +18,14 @@
         <result property="content" 		column="content" 			jdbcType="VARCHAR" />
     </resultMap>
 
-<!--    <resultMap id="commentsSelectMap" type="com.example.sstv.community.Comments">-->
-<!--        <result property="commentsNo" 		column="writing_no" 			jdbcType="NUMERIC" />-->
-<!--        <result property="hostUserId" 		column="host_user_id" 			jdbcType="VARCHAR" />-->
-<!--        <result property="guestUserId" 		column="guest_user_id" 			jdbcType="VARCHAR" />-->
-<!--        <result property="title" 		column="title" 			jdbcType="VARCHAR" />-->
-<!--        <result property="regDate" 		column="reg_date" 			jdbcType="TIMESTAMP" />-->
-<!--        <result property="content" 		column="content" 			jdbcType="VARCHAR" />-->
-<!--    </resultMap>-->
+    <resultMap id="commentsSelectMap" type="com.example.sstv.community.Comments">
+        <result property="commentsNo" 		column="comments_no" 			jdbcType="NUMERIC" />
+        <result property="commentsUserId" 		column="comments_user_id" 			jdbcType="VARCHAR" />
+        <result property="writingNo" 		column="writing_No" 			jdbcType="NUMERIC" />
+        <result property="replayNo" 		column="replay_no" 			jdbcType="NUMERIC" />
+        <result property="content" 		column="content" 			jdbcType="VARCHAR" />
+        <result property="regDate" 		column="reg_date" 			jdbcType="TIMESTAMP" />
+    </resultMap>
 
 
 
@@ -53,6 +53,21 @@
         ( #{hostUserId}, #{guestUserId}, #{title}, CURRENT_TIMESTAMP(), #{content} )
     </insert>
 
+    <insert id="addComments" parameterType="com.example.sstv.community.Comments">
+        INSERT INTO COMMENTS ( comments_user_id, writing_no, replay_no, content, reg_date )
+        VALUES
+        ( #{commentsUserId}, #{writingNo}, #{replayNo}, #{content}, CURRENT_TIMESTAMP() )
+    </insert>
 
+    <select 	id="getCommentsList"	parameterType="com.example.sstv.community.Comments"	resultMap="commentsSelectMap">
+        SELECT
+        *
+        FROM COMMENTS
+        WHERE writing_no = #{writing_no}
+    </select>
+
+    <delete  id="deleteComments" >
+        DELETE from COMMENTS where comments_no = #{comments_no}
+    </delete>
 
 </mapper>
