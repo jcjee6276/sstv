@@ -12,7 +12,6 @@ import java.util.List;
 * */
 @Mapper
 public interface UserDAO {
-
     void addUser(User user);
     void addSNSUser(User user);
     User getUser(String userId);
