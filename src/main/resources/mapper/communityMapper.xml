@@ -43,7 +43,7 @@
 
     </select>
 
-    <select 	id="getWritingCount"	parameterType="com.example.sstv.community.Community"	resultMap="communitySelectMap">
+    <select 	id="getWritingCount"	resultType="int">
         SELECT
         COUNT(*) AS writing_no
         FROM WRITING

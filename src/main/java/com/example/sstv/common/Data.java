@@ -10,6 +10,15 @@ public class Data {
 
     private String result;
     private Object data;
+
+    public Object getData2() {
+        return data2;
+    }
+
+    public void setData2(Object data2) {
+        this.data2 = data2;
+    }
+
     private Object data2;
 
     public Data(String result, Object data) {
@@ -37,4 +46,6 @@ public class Data {
     public void setData(Object data) {
         this.data = data;
     }
+
+
 }
