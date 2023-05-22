@@ -68,8 +68,8 @@
     </update>
 
     <!-- 관리자의 전체 회원 조회 -->
-    <select id="getAdminUserlist" parameterType="com.example.sstv.common.Search" >
-        SELECT *
+    <select id="getAdminUserlist" parameterType="com.example.sstv.common.Search" resultMap="userSelectMap">
+        SELECT user_name, user_nickname, date_birth, sign_date
         FROM USER
         <if test="searchCondition != null">
             <where>

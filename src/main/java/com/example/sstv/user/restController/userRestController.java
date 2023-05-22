@@ -2,6 +2,7 @@ package com.example.sstv.user.restController;
 
 import com.example.sstv.common.Data;
 import com.example.sstv.common.NodeCookie;
+import com.example.sstv.common.Search;
 import com.example.sstv.user.Service.UserService;
 import com.example.sstv.user.User;
 import jakarta.servlet.http.Cookie;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/user/*")
@@ -156,4 +158,27 @@ public class userRestController {
         return data;
     }
 
+    @PostMapping (value="getAdminUserList")
+    public Data getAdminUserList(@RequestBody Search search ) {
+        System.out.println("전체 회원목록 조회");
+        System.out.println(search.getSearchKeyword());
+        System.out.println(search.getSearchCondition());
+        System.out.println("search ..?"+search);
+        System.out.println("searchCondition :: "+search.getSearchCondition());
+        System.out.println("searchKeyword ::"+search.getSearchKeyword());
+
+        Data data = new Data("success", userService.getAdminUserlist(search));
+        return data;
+    }
+
+//    @PostMapping (value="sendSMS")
+//    public Data sendSMS(@RequestBody String phone, HttpServletRequest request) {
+//        Random rand = new Random();
+//        int min = 100000; // 최소값 (6자리)
+//        int max = 999999; // 최대값 (6자리)
+//        int randomNumber = rand.nextInt(max - min + 1) + min;
+//        userService.sendSMS(phone, rand, request);
+//        Data data = new Data("success", "문자 전송 완료");
+//        return data;
+//    }
 }
