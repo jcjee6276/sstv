@@ -1,6 +1,9 @@
 package com.example.sstv.user;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 public class User {
     private String userId;
@@ -11,14 +14,16 @@ public class User {
     private String dateBirth;
     private String eMail;
     private String phone;
-    private Date signDate;
+    private Timestamp signDate;
     private int withdrawal;
+    private Timestamp withdrawalDate;
     private String roll;
     private int coin;
     private int accumulatedViewers;
-    private int totalStreamingAccumulatedTime;
+    private Time totalStreamingAccumulatedTime;
     private int stRoll;
     private int userType;
+    private List<String> blackList;
 
     @Override
     public String toString() {
@@ -33,13 +38,39 @@ public class User {
                 ", phone='" + phone + '\'' +
                 ", signDate=" + signDate +
                 ", withdrawal=" + withdrawal +
+                ", withdrawalDate=" + withdrawalDate +
                 ", roll='" + roll + '\'' +
                 ", coin=" + coin +
                 ", accumulatedViewers=" + accumulatedViewers +
                 ", totalStreamingAccumulatedTime=" + totalStreamingAccumulatedTime +
                 ", stRoll=" + stRoll +
                 ", userType=" + userType +
+                ", blackList=" + blackList +
                 '}';
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getProfilePhoto() {
+        return profilePhoto;
+    }
+
+    public void setProfilePhoto(String profilePhoto) {
+        this.profilePhoto = profilePhoto;
     }
 
     public String getUserNickname() {
@@ -82,11 +113,11 @@ public class User {
         this.phone = phone;
     }
 
-    public Date getSignDate() {
+    public Timestamp getSignDate() {
         return signDate;
     }
 
-    public void setSignDate(Date signDate) {
+    public void setSignDate(Timestamp signDate) {
         this.signDate = signDate;
     }
 
@@ -96,6 +127,14 @@ public class User {
 
     public void setWithdrawal(int withdrawal) {
         this.withdrawal = withdrawal;
+    }
+
+    public Timestamp getWithdrawalDate() {
+        return withdrawalDate;
+    }
+
+    public void setWithdrawalDate(Timestamp withdrawalDate) {
+        this.withdrawalDate = withdrawalDate;
     }
 
     public String getRoll() {
@@ -122,11 +161,11 @@ public class User {
         this.accumulatedViewers = accumulatedViewers;
     }
 
-    public int getTotalStreamingAccumulatedTime() {
+    public Time getTotalStreamingAccumulatedTime() {
         return totalStreamingAccumulatedTime;
     }
 
-    public void setTotalStreamingAccumulatedTime(int totalStreamingAccumulatedTime) {
+    public void setTotalStreamingAccumulatedTime(Time totalStreamingAccumulatedTime) {
         this.totalStreamingAccumulatedTime = totalStreamingAccumulatedTime;
     }
 
@@ -146,27 +185,11 @@ public class User {
         this.userType = userType;
     }
 
-    public String getProfilePhoto() {
-        return profilePhoto;
+    public List<String> getBlackList() {
+        return blackList;
     }
 
-    public void setProfilePhoto(String profilePhoto) {
-        this.profilePhoto = profilePhoto;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void setBlackList(List<String> blackList) {
+        this.blackList = blackList;
     }
 }
