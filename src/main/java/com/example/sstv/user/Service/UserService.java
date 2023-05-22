@@ -26,11 +26,6 @@ import java.util.Map;
 public class UserService {
     private UserDAO userDAO;
 
-//    @Autowired
-//    public void addUser(User user) {
-//        userDAO.addUser(user);
-//    }
-
     @Autowired
     public UserService(UserDAO userDAO) {
         this.userDAO = userDAO;
