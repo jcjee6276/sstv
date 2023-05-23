@@ -33,8 +33,7 @@ public class communityRestController {
     @PostMapping(value="addWriting", consumes = "application/json;")
     public Data addWriting(@RequestBody Community community) {
         System.out.println("test community : "+community);
-        community.setHostUserId("user1");
-        community.setGuestUserId("user3");
+
         communityService.addWriting(community);
         Data data = new Data("success", "성공");
         return data;
@@ -64,7 +63,7 @@ public class communityRestController {
 
     }
 
-    @PostMapping(value="addComments", consumes = "application/json;")
+    @PostMapping(value="addComments/{writing_no}", consumes = "application/json;")
     public Data addComments(@RequestBody Comments comments) {
         System.out.println("test : "+ comments);
 

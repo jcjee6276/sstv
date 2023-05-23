@@ -16,6 +16,16 @@
         <result property="title" 		column="title" 			jdbcType="VARCHAR" />
         <result property="regDate" 		column="reg_date" 			jdbcType="TIMESTAMP" />
         <result property="content" 		column="content" 			jdbcType="VARCHAR" />
+
+        <collection property="comments" ofType="com.example.sstv.community.Comments">
+            <result property="commentsNo" 		column="comments_no" 			jdbcType="NUMERIC" />
+            <result property="commentsUserId" 		column="comments_user_id" 			jdbcType="VARCHAR" />
+            <result property="writingNo" 		column="writing_No" 			jdbcType="NUMERIC" />
+            <result property="replayNo" 		column="replay_no" 			jdbcType="NUMERIC" />
+            <result property="content" 		column="content" 			jdbcType="VARCHAR" />
+            <result property="regDate" 		column="reg_date" 			jdbcType="TIMESTAMP" />
+        </collection>
+
     </resultMap>
 
     <resultMap id="commentsSelectMap" type="com.example.sstv.community.Comments">
@@ -29,18 +39,23 @@
 
 
 
+
+
     <select 	id="getWriting"	parameterType="com.example.sstv.community.Community"	resultMap="communitySelectMap">
-        SELECT
-        *
+        select *
         FROM WRITING
-        WHERE writing_no = #{writing_no}
+        LEFT JOIN COMMENTS ON WRITING.writing_no = COMMENTS.writing_no
+        WHERE WRITING.WRITING_NO = #{writingNo}
     </select>
 
     <select 	id="getWritingList"	parameterType="com.example.sstv.community.Community"	resultMap="communitySelectMap">
-        SELECT
-        *
-        FROM WRITING
 
+
+        SELECT WRITING.*, COUNT(COMMENTS.writing_no) AS comment_count
+        FROM WRITING
+        LEFT JOIN COMMENTS ON WRITING.writing_no = COMMENTS.writing_no
+        GROUP BY WRITING.writing_no
+        ORDER BY reg_date desc;
     </select>
 
     <select 	id="getWritingCount"	resultType="int">
