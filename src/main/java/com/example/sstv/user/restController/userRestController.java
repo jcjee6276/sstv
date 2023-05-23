@@ -4,6 +4,7 @@ import com.example.sstv.common.Data;
 import com.example.sstv.common.NodeCookie;
 import com.example.sstv.common.Search;
 import com.example.sstv.fan.Service.FanService;
+import com.example.sstv.user.CoinHistroy;
 import com.example.sstv.user.Service.UserService;
 import com.example.sstv.user.User;
 import jakarta.servlet.http.Cookie;
@@ -82,13 +83,13 @@ public class userRestController {
         User info = userService.getUser(user.getUserId());
         System.out.println(info.getUserId());
         System.out.println("blackList..? 잘 나오니..?" +fanService.getBlackList(info.getUserId()));
+        info.setBlackList(fanService.getBlackList(info.getUserId()));
         // 해당 회원의 blackList
         //fanService.getBlacklist(info.getUserId());
 
         if(user.getPassword().equals(info.getPassword())){
             //회원 정보&블랙리스트 세션에 저장
             session.setAttribute("user", info);
-            session.setAttribute("user", fanService.getBlackList(info.getUserId()));
 //            Cookie cookie = nodeCookie.getNodeCookie(info);
 //            response.addCookie(cookie);
         }
@@ -194,4 +195,18 @@ public class userRestController {
 //        Data data = new Data("success", "문자 전송 완료");
 //        return data;
 //    }
+
+    @PostMapping ( value="addCoinHistory")
+    public Data addCoinHistory(@RequestBody CoinHistroy coinHistroy){
+        userService.addCoinHistory(coinHistroy);
+        Data data = new Data("success", "코인 사용내역 등록 완료.");
+        return data;
+    }
+
+    @GetMapping ( value="getCoinHistory/{userId}")
+    public Data getCoinHistory(@PathVariable String userId){
+        System.out.println(userId);
+        Data data = new Data("success", userService.getCoinHistory(userId));
+        return data;
+    }
 }

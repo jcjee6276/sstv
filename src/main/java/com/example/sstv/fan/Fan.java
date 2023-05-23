@@ -1,6 +1,8 @@
 package com.example.sstv.fan;
 
 
+import com.example.sstv.user.User;
+
 public class Fan {
     private int fanNo;
     private String userId;
@@ -11,7 +13,7 @@ public class Fan {
     public String toString() {
         return "Fan{" +
                 "fanNo=" + fanNo +
-                ", userId=" + userId +
+                ", userId='" + userId + '\'' +
                 ", followUser='" + followUser + '\'' +
                 ", blackUser='" + blackUser + '\'' +
                 '}';

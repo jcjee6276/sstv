@@ -2,10 +2,13 @@ package com.example.sstv.fan.restController;
 
 import com.example.sstv.common.Data;
 import com.example.sstv.fan.Fan;
+import com.example.sstv.user.Service.UserService;
 import com.example.sstv.fan.Service.FanService;
+import com.example.sstv.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,9 +17,14 @@ import java.util.Map;
 public class fanRestController {
     @Autowired
     private FanService fanService;
+    @Autowired
+    private UserService userService;
 
     @Autowired
-    public fanRestController(FanService fanService) { this.fanService = fanService; }
+    public fanRestController(FanService fanService, UserService userService) {
+        this.fanService = fanService;
+        this.userService = userService;
+    }
 
     @PostMapping(value="addFollow")
     public Data addFollow(@RequestBody Fan fan){
@@ -34,15 +42,56 @@ public class fanRestController {
 
     @GetMapping(value="getFollow/{userId}")
     public Data getFollow(@PathVariable String userId){
-        System.out.println(userId);
-        System.out.println(fanService.getFollowList(userId));
-        Data data = new Data("success", fanService.getFollowList(userId));
+        System.out.println("controller의 userId :: "+userId);
+        System.out.println("fanlist 잘 받아오나..?"+fanService.getFollowList(userId));
+        //follow 유저의 id List
+        List<String> followList = fanService.getFollowList(userId);
+        List<User> followUserList = new ArrayList<>();
+        System.out.println("닉네임으로 출력해보자!"+followList);
+        //list에 담긴 id로 userNickname을 조회
+        for (int i = 0; i< followList.size(); i++){
+            if( followList != null){
+                String id = followList.get(i);
+                followUserList.add(userService.getUserNickname(id));
+            }
+        }
+        System.out.println("nickName 제대로 가져오니..? :: "+followUserList);
+
+        List<String> followUserNicknameList = new ArrayList<>();
+
+        for (User user : followUserList) {
+            if (user != null) {
+                String userNickname = user.getUserNickname();
+                followUserNicknameList.add(userNickname);
+            }
+        }
+        System.out.println("팔로우 회원 닉네임 ..?"+followUserNicknameList);
+
+
+        Data data = new Data("success", followUserNicknameList);
         return data;
     }
     @GetMapping(value="getFollowing/{followUser}")
     public Data getFollowing(@PathVariable String followUser){
-        System.out.println(fanService.getFollowingList(followUser));
-        Data data = new Data("success", fanService.getFollowingList(followUser));
+
+        List<String> followingList = fanService.getFollowingList(followUser);
+        List<User> followingUserList = new ArrayList<>();
+        System.out.println("닉네임으로 출력해보자!"+followingList);
+        //list에 담긴 id로 userNickname을 조회
+        for (int i = 0; i< followingList.size(); i++){
+            if( followingList != null){
+                String follower = followingList.get(i);
+                followingUserList.add(userService.getUserNickname(follower));
+            }
+        }
+        List<String> followingUserNicknameList = new ArrayList<>();
+        for (User user : followingUserList) {
+            if (user != null) {
+                String userNickname = user.getUserNickname();
+                followingUserNicknameList.add(userNickname);
+            }
+        }
+        Data data = new Data("success", followingUserNicknameList);
         return data;
     }
 

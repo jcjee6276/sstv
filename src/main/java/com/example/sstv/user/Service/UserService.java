@@ -1,6 +1,7 @@
 package com.example.sstv.user.Service;
 
 import com.example.sstv.common.Search;
+import com.example.sstv.user.CoinHistroy;
 import com.example.sstv.user.DAO.UserDAO;
 import com.example.sstv.user.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,6 +37,7 @@ public class UserService {
     public User getUser(String userId) {
         return userDAO.getUser(userId);
     }
+    public User getUserNickname(String userId) { return userDAO.getUserNickname(userId);}
     public User findId(String phone) {
         return userDAO.findId(phone);
     }
@@ -321,5 +323,13 @@ public class UserService {
         System.out.println("시그니처 키 값 : "+encodeBase64String);
 
         return encodeBase64String;
+    }
+
+    public void addCoinHistory(CoinHistroy coinHistroy){
+        userDAO.addCoinHistory(coinHistroy);
+    }
+    public List<CoinHistroy> getCoinHistory(String userId){
+        System.out.println(userId);
+        return userDAO.getCoinHistory(userId);
     }
 }
