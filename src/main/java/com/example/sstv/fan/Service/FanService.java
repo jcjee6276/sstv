@@ -26,34 +26,41 @@ public class FanService {
     //내가 팔로우한 회원 조회
     public List<String> getFollowList(String userId) {
         List<Fan> fanList = fanDAO.getFollow(userId);
+        System.out.println("service의 getFollow 값은 ..?"+fanDAO.getFollow(userId));
+        System.out.println("service의 fanList 값 check"+fanList);
         List<String> getFollowList = new ArrayList<>();
         for (Fan fan : fanList) {
-            if (fan != null && fan.getUserId() != null) {
-                getFollowList.add(fan.getUserId());
+            if (fan != null && fan.getFollowUser() != null) {
+                getFollowList.add(fan.getFollowUser());
             }
         }
+        System.out.println("return 값은..? :: "+getFollowList);
         return getFollowList;
     }
     //나를 팔로우한 회원 조회
     public List<String> getFollowingList(String followUser) {
         List<Fan> fanList = fanDAO.getFollowing(followUser);
+        System.out.println("fanList 값 check"+fanList);
         List<String> getFollowingList = new ArrayList<>();
         for (Fan fan : fanList) {
             if (fan != null && fan.getUserId() != null) {
-                getFollowingList.add(fan.getFollowUser());
+                getFollowingList.add(fan.getUserId());
             }
         }
+        System.out.println("return 값은..? :: "+getFollowingList);
         return getFollowingList;
     }
     // 블랙리스트 조회
     public List<String> getBlackList(String userId) {
             List<Fan> fanList = fanDAO.getBlackList(userId);
+            System.out.println("fanList 값 check"+fanList);
             List<String> getBlackList = new ArrayList<>();
             for (Fan fan : fanList) {
                 if (fan != null && fan.getBlackUser() != null) {
                     getBlackList.add(fan.getBlackUser());
                 }
             }
+            System.out.println("return 값은..? :: "+getBlackList);
             return getBlackList;
     }
     public void removeFollow(Fan fan){

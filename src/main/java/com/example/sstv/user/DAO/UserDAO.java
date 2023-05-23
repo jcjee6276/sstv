@@ -1,5 +1,6 @@
 package com.example.sstv.user.DAO;
 
+import com.example.sstv.user.CoinHistroy;
 import com.example.sstv.user.User;
 import com.example.sstv.common.Search;
 import org.apache.ibatis.annotations.Mapper;
@@ -16,11 +17,14 @@ public interface UserDAO {
     void addUser(User user);
     void addSNSUser(User user);
     User getUser(String userId);
+    User getUserNickname(String userId);
     User findId(String phone);
     void findPasswd(User user);
     List<User> getAdminUserlist(Search search);
     void removeUserStart(User user);
     void removeUserCancle(User user);
     void updateUser(User user);
+    void addCoinHistory(CoinHistroy coinHistroy);
+    List<CoinHistroy> getCoinHistory(String userId);
 
 }

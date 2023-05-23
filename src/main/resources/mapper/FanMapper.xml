@@ -34,13 +34,15 @@
         SELECT follow_user
         FROM FAN
         WHERE user_id = #{value}
+        ORDER BY follow_user ASC
     </select>
-    
+
     <!-- 팔로잉 조회 (나를 좋아요 누른 회원)-->
     <select id="getFollowing" parameterType="com.example.sstv.fan.Fan" resultMap="fanSelectMap">
         SELECT user_id
         FROM FAN
         WHERE follow_user = #{value}
+        ORDER BY user_id ASC
     </select>
 
     <!-- 블랙리스트 조회 -->
