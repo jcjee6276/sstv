@@ -16,6 +16,7 @@
         <result property="title" 		column="title" 			jdbcType="VARCHAR" />
         <result property="regDate" 		column="reg_date" 			jdbcType="TIMESTAMP" />
         <result property="content" 		column="content" 			jdbcType="VARCHAR" />
+        <result property="commentCount" column="comment_count"      jdbcType="NUMERIC" />
 
         <collection property="comments" ofType="com.example.sstv.community.Comments">
             <result property="commentsNo" 		column="comments_no" 			jdbcType="NUMERIC" />
@@ -26,6 +27,8 @@
             <result property="regDate" 		column="reg_date" 			jdbcType="TIMESTAMP" />
         </collection>
 
+
+
     </resultMap>
 
     <resultMap id="commentsSelectMap" type="com.example.sstv.community.Comments">
@@ -35,6 +38,7 @@
         <result property="replayNo" 		column="replay_no" 			jdbcType="NUMERIC" />
         <result property="content" 		column="content" 			jdbcType="VARCHAR" />
         <result property="regDate" 		column="reg_date" 			jdbcType="TIMESTAMP" />
+
     </resultMap>
 
 
@@ -48,25 +52,35 @@
         WHERE WRITING.WRITING_NO = #{writingNo}
     </select>
 
-    <select 	id="getWritingList"	parameterType="com.example.sstv.community.Community"	resultMap="communitySelectMap">
+<!--    <select 	id="getWritingList"	parameterType="com.example.sstv.community.Community"	resultMap="communitySelectMap">-->
 
 
+<!--        SELECT WRITING.*, COUNT(COMMENTS.writing_no) AS comment_count-->
+<!--        FROM WRITING-->
+<!--        LEFT JOIN COMMENTS ON WRITING.writing_no = COMMENTS.writing_no-->
+<!--        GROUP BY WRITING.writing_no-->
+<!--        ORDER BY reg_date desc;-->
+<!--    </select>-->
+
+    <select id="getWritingList" parameterType="com.example.sstv.community.Community" resultMap="communitySelectMap">
         SELECT WRITING.*, COUNT(COMMENTS.writing_no) AS comment_count
         FROM WRITING
         LEFT JOIN COMMENTS ON WRITING.writing_no = COMMENTS.writing_no
+        WHERE host_user_id = #{hostUserId}
         GROUP BY WRITING.writing_no
-        ORDER BY reg_date desc;
+        ORDER BY reg_date desc
     </select>
 
     <select 	id="getWritingCount"	resultType="int">
         SELECT
         COUNT(*) AS writing_no
         FROM WRITING
+        WHERE host_user_id = #{hostUserId}
 
     </select>
 
     <delete  id="deleteWriting" >
-        DELETE from WRITING where writing_no = #{writing_no}
+        DELETE from WRITING  where writing_no = #{writing_no}
     </delete>
 
     <update id="updateWriting" parameterType="com.example.sstv.community.Community">

@@ -64,6 +64,20 @@ public class Comments {
 
     private String commentsUserId;
     private int writingNo;
+
+    @Override
+    public String toString() {
+        return "Comments{" +
+                "community=" + community +
+                ", commentsNo=" + commentsNo +
+                ", commentsUserId='" + commentsUserId + '\'' +
+                ", writingNo=" + writingNo +
+                ", replayNo=" + replayNo +
+                ", content='" + content + '\'' +
+                ", regDate=" + regDate +
+                '}';
+    }
+
     private int replayNo;
     private String content;
     private Date regDate;

@@ -63,7 +63,7 @@ public class communityRestController {
 
     }
 
-    @PostMapping(value="addComments/{writing_no}", consumes = "application/json;")
+    @PostMapping(value="addComments", consumes = "application/json;")
     public Data addComments(@RequestBody Comments comments) {
         System.out.println("test : "+ comments);
 
@@ -87,10 +87,11 @@ public class communityRestController {
         return data;
     }
 
-    @GetMapping(value="writingList") // User 받아서 writinglist 걸러내기 @pathvariable userid 추가
-    public Data getWritingList() {
-        Map<String, Object> map = communityService.getWritingList();
-        map.put("count", communityService.getWritingCount());
+    @GetMapping(value="writingList/{hostUserId}") // User 받아서 writinglist 걸러내기 @pathvariable userid 추가
+    public Data getWritingList(@PathVariable String hostUserId) {
+        Map<String, Object> map = communityService.getWritingList(hostUserId);
+        map.put("count", communityService.getWritingCount(hostUserId));
+        System.out.println(map.get("list"));
         Data data = new Data("success",  map.get("list"), map.get("count"));
         return data;
     }

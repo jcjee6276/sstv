@@ -6,6 +6,15 @@ import java.util.List;
 public class Community {
     private int writingNo;
 
+    public int getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
+    }
+
+    private int commentCount;
     public int getWritingNo() {
         return writingNo;
     }
@@ -16,7 +25,16 @@ public class Community {
 
     private String hostUserId;
 
-    //private int comment
+
+    public int getComment() {
+        return comment;
+    }
+
+    public void setComment(int comment) {
+        this.comment = comment;
+    }
+
+    private int comment;
     public List<Comments> getComments() {
         return comments;
     }
@@ -71,20 +89,24 @@ public class Community {
         return content;
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-
     @Override
     public String toString() {
         return "Community{" +
                 "writingNo=" + writingNo +
+                ", commentCount=" + commentCount +
                 ", hostUserId='" + hostUserId + '\'' +
+                ", comment=" + comment +
+                ", comments=" + comments +
                 ", guestUserId='" + guestUserId + '\'' +
                 ", title='" + title + '\'' +
                 ", regDate=" + regDate +
                 ", content='" + content + '\'' +
                 '}';
     }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+
 }
