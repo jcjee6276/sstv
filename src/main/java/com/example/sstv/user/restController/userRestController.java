@@ -85,6 +85,7 @@ public class userRestController {
 
         if(user.getPassword().equals(info.getPassword())){
             //회원 정보&블랙리스트 세션에 저장
+            System.out.println("아이디 패스워드 일치");
             session.setAttribute("user", info);
 //            Cookie cookie = nodeCookie.getNodeCookie(info);
 //            response.addCookie(cookie);
@@ -97,12 +98,13 @@ public class userRestController {
         return data;
     }
 
-    @GetMapping(value="loginCheck")
+    @GetMapping(value="login")
     public Data loginSessionCheck(HttpSession session){
-        System.out.println("login session 체크");
-        session.getAttribute("user");
-        System.out.println("session check :: "+session.getAttribute("user"));
-        Data data = new Data("success","");
+        User user = (User)session.getAttribute("user");
+        if(user == null){
+            return null;
+        }
+        Data data = new Data("success",user);
         return data;
     }
 
