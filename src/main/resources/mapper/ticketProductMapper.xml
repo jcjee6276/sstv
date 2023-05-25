@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!-- type에는 사용하려는 domain의 경로를 적어여한다. -->
+<mapper namespace="com.example.sstv.deal.DAO.TicketProductDAO">
+
+    <resultMap id="TicketProductSelectMap" type="com.example.sstv.deal.TicketProduct">
+        <result property="ticketProdNo" 	column="ticket_prod_no" 			jdbcType="NUMERIC" />
+        <result property="ticketName" 		column="ticket_name" 			jdbcType="VARCHAR" />
+        <result property="price"     column="price"      jdbcType="NUMERIC" />
+    </resultMap>
+
+
+
+    <select id="getTicketProductAdminList" parameterType="int" resultMap="TicketProductSelectMap">
+        SELECT
+        ticket_prod_no, ticket_name ,price
+        FROM TICKET_PRODUCT
+        WHERE ticket_prod_no = #{ticketProdNo}
+    </select>
+
+    <insert id="addTicketProductAdmin" parameterType="com.example.sstv.deal.TicketProduct">
+        INSERT INTO TICKET_PRODUCT (ticket_prod_no,ticket_name,price)
+        VALUE( #{ticketProdNo}, #{ticketName},#{price})
+    </insert>
+
+    <delete id="removeTicketProductAdmin" parameterType="com.example.sstv.deal.TicketProduct">
+        DELETE FROM TICKET_PRODUCT
+        WHERE ticket_prod_no = #{ticketProdNo}
+    </delete>
+
+</mapper>
