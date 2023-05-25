@@ -45,11 +45,18 @@
         ORDER BY user_id ASC
     </select>
 
-    <!-- 블랙리스트 조회 -->
+    <!-- 자신의 블랙리스트 조회 -->
     <select id="getBlackList" parameterType="String" resultMap="fanSelectMap">
         SELECT black_user
         FROM FAN
         WHERE user_id = #{userId}
+    </select>
+
+    <!-- 블랙리스트 보유자 조회 -->
+    <select id="getBlackListOwner" parameterType="String" resultMap="fanSelectMap">
+        SELECT user_id
+        FROM FAN
+        WHERE black_user = #{value}
     </select>
 
     <!-- 팔로우 취소 -->

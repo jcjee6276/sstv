@@ -63,6 +63,17 @@ public class FanService {
             System.out.println("return 값은..? :: "+getBlackList);
             return getBlackList;
     }
+    public List<String> getBlackListOwner(String blackUser) {
+        List<Fan> fanList = fanDAO.getBlackListOwner(blackUser);
+        List<String> getBlackListOwner = new ArrayList<>();
+        for (Fan fan : fanList) {
+            if (fan != null && fan.getUserId() != null) {
+                getBlackListOwner.add(fan.getUserId());
+            }
+        }
+        System.out.println("return 값은..? :: "+getBlackListOwner);
+        return getBlackListOwner;
+    }
     public void removeFollow(Fan fan){
         fanDAO.removeFollow(fan);
     }

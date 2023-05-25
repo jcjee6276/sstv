@@ -4,6 +4,7 @@ import com.example.sstv.common.Search;
 import com.example.sstv.user.CoinHistroy;
 import com.example.sstv.user.DAO.UserDAO;
 import com.example.sstv.user.User;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -74,36 +75,88 @@ public class UserService {
         return result;
     }
 
-    public String getKakaoToken(String authorize_code) throws IOException{
-        System.out.println("kakao token 받아보자.");
-        String access_token="";
-        String url = "https://kauth.kakao.com";
-        URL apiurl;
-        apiurl = new URL(url);
+//    public String getKakaoToken(String authorize_code) throws IOException {
+//        System.out.println("kakao token 받아보자.");
+//        String access_token = "";
+//        String refresh_token = "";
+//        String url = "https://kauth.kakao.com";
+//        URL apiurl;
+//        apiurl = new URL(url);
+//
+//        HttpURLConnection con = (HttpURLConnection) apiurl.openConnection();
+//        con.setRequestMethod("POST");
+//
+//        String requestRrl = "/oauth/authorize?client_id=" + "73b235263e9c55fb4e85a97648c1c0de" +
+//                "&redirect_uri=" + "http://192.168.0.21:8080/user/kakaoLogin" + "&response_type=code";
+//        System.out.println("requestRrl 확인 :: " + requestRrl);
+//
+        public String getkakaoToken(String authorize_code) throws IOException {
+            System.out.println("토큰 주세요..");
+            String access_token = "";
+            String refresh_token = "";
+            String url = "https://kauth.kakao.com/oauth/token";
 
-        HttpURLConnection con = (HttpURLConnection) apiurl.openConnection();
-        con.setRequestMethod("GET");
+            URL apiurl;
+            apiurl = new URL(url);
 
-        String requestRrl = "/oauth/authorize?client_id="+"73b235263e9c55fb4e85a97648c1c0de"+
-                "&redirect_uri="+"http://192.168.0.21:8080/user/kakaoLogin"+"&response_type=code";
-        System.out.println("requestRrl 확인 :: "+requestRrl);
+            // HTTP 연결 생성
+            HttpURLConnection con = (HttpURLConnection) apiurl.openConnection();
 
-        con.setDoOutput(true);
-        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-        wr.writeBytes(requestRrl);
-        wr.flush();
+            // HTTP 요청 메소드 설정
+            con.setRequestMethod("POST");
+            con.setDoOutput(true);
 
-        int responseCode = con.getResponseCode();
-        System.out.println("responseCode :: "+responseCode);
+            // HTTP 요청에 필요한 파라미터 설정
+            String postParams = "grant_type=authorization_code" +
+                    "&client_id=" + "73b235263e9c55fb4e85a97648c1c0de" +
+                    "&redirect_uri=" + "http://192.168.0.21:8080/user/kakaoLogin" +
+                    "&code=" + authorize_code;
+            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
 
-        return authorize_code;
+            System.out.println("전달 파라미터 확인.. :: "+postParams);
+            // HTTP 요청 본문에 파라미터 추가
+            con.setDoOutput(true);
+            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+            wr.writeBytes(postParams);
+            wr.flush();
+
+            int responseCode = con.getResponseCode();
+            System.out.println("responseCode :: "+responseCode);
+
+            if(responseCode == 200){
+                InputStream inputStream = con.getInputStream();
+                BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+
+                String line;
+                String response = "";
+                while ((line = br.readLine()) != null) {
+                    response+=(line);
+                }
+                br.close();
+                System.out.println("responseBody 확인 :: "+response);
+                ObjectMapper mapper = new ObjectMapper(); // jsonSimple 사용
+                Map<String, Object> kakao_token = mapper.readValue(response, Map.class);
+                System.out.println("kakao token 발급 : " + kakao_token);
+
+                access_token = kakao_token.get("access_token").toString(); // access_token 추출
+                refresh_token = kakao_token.get("refresh_token").toString(); // refresh_token 추출
+            }
+
+//        ObjectMapper mapper = new ObjectMapper();
+//        JsonNode jsonNode = mapper.readTree(access_token);
+//        JsonNode jsonNode1 = mapper.readTree(refresh_token);
+//        access_token = jsonNode.get("access_token").asText();
+//        refresh_token = jsonNode1.get("refresh_token").asText();
+            System.out.println("access_token 발급 완료 :: "+access_token);
+            System.out.println("refresh_token 발급 완료 :: "+refresh_token);
+        return access_token;
     }
 
     public String getAccessToken(String authorize_code) throws IOException {
         System.out.println("토큰 주세요..");
         String access_Token = "";
         String refresh_Token = "";
-        String url = "https://nid.naver.com/oauth2.0/token";
+        String url = "https://kauth.kakao.com/oauth/token";
 
         URL apiurl;
         apiurl = new URL(url);
@@ -117,12 +170,11 @@ public class UserService {
 
         // HTTP 요청에 필요한 파라미터 설정
         String postParams = "grant_type=authorization_code" +
-                "&client_id=" + "oxyovmQ_xk_uAaUdHUKu" +
-                "&redirect_uri=" + "http://192.168.0.21:8080/user/addSNSUser" +
-                "&code=" + authorize_code +
-                "&client_secret=" + "uFi6q1_u5O";
+                "&client_id=" + "73b235263e9c55fb4e85a97648c1c0de" +
+                "&redirect_uri=" + "http://192.168.0.21:8080/user/kakaoLogin" +
+                "&code=" + authorize_code;
         con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
-        
+
         System.out.println("전달 파라미터 확인.. :: "+postParams);
         // HTTP 요청 본문에 파라미터 추가
         con.setDoOutput(true);

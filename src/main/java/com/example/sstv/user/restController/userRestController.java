@@ -252,11 +252,13 @@ public class userRestController {
         return data;
     }
 
-//    @GetMapping (value="KakaoLogin")
-//    public Data getKaKaoToken(@RequestParam(value = "code", required = false) String code) throws IOException {
-//        System.out.println(code);
-//        userService.getKakaoToken(code);
-//        Data data = new Data("success","");
-//        return  data;
-//    }
+    @GetMapping (value="kakaoLogin")
+    public Data kakaoLogin(@RequestParam(value = "code", required = false) String code) throws IOException {
+        System.out.println(code);
+        userService.getkakaoToken(code);
+        Data data = new Data("success","");
+        return  data;
+    }
+
+
 }

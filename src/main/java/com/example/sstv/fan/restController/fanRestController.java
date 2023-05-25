@@ -95,6 +95,14 @@ public class fanRestController {
         return data;
     }
 
+    @GetMapping(value="getBlackListOwner/{blackUser}")
+    public Data getBlackListOwner(@PathVariable String blackUser){
+        fanService.getBlackListOwner(blackUser);
+        System.out.println(fanService.getBlackListOwner(blackUser));
+        Data data = new Data("success",fanService.getBlackListOwner(blackUser));
+        return data;
+    }
+
     @PostMapping(value="removeFollow")
     public Data removeFollow(@RequestBody Fan fan){
         fanService.removeFollow(fan);
