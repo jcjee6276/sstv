@@ -94,7 +94,17 @@ public class fanRestController {
         Data data = new Data("success", followingUserNicknameList);
         return data;
     }
-
+    
+    // 블랙리스트 목록 조회
+    @GetMapping(value="getBlackList/{userId}")
+    public Data getBlackList(@PathVariable String userId){
+        fanService.getBlackList(userId);
+        System.out.println(fanService.getBlackList(userId));
+        Data data = new Data("success",fanService.getBlackList(userId));
+        return data;
+    }
+    
+    //블랙리스트 보유자 조회
     @GetMapping(value="getBlackListOwner/{blackUser}")
     public Data getBlackListOwner(@PathVariable String blackUser){
         fanService.getBlackListOwner(blackUser);
