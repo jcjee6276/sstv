@@ -253,11 +253,19 @@ public class userRestController {
     }
 
     @GetMapping (value="kakaoLogin")
-    public Data kakaoLogin(@RequestParam(value = "code", required = false) String code) throws IOException {
+    public Data kakaoLogin(@RequestParam(value = "code", required = false) String code,HttpSession session) throws Exception {
         System.out.println(code);
-        userService.getkakaoToken(code);
-        Data data = new Data("success","");
-        return  data;
+        //발급 받아온 접근 token
+        String access_token = userService.getkakaoToken(code);
+        System.out.println("access_token :: "+access_token);
+        Map<String, Object> kakaoUserInfo = userService.getKakaoInfo(access_token);
+        String snsUserId = (String)kakaoUserInfo.get("id");
+        System.out.println(snsUserId);
+
+        session.setAttribute("user", snsUserId);
+
+        Data data = new Data("success",kakaoUserInfo);
+        return data;
     }
 
 

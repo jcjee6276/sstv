@@ -16,6 +16,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -100,31 +101,31 @@ public class UserService {
             apiurl = new URL(url);
 
             // HTTP 연결 생성
-            HttpURLConnection con = (HttpURLConnection) apiurl.openConnection();
+            HttpURLConnection conn = (HttpURLConnection) apiurl.openConnection();
 
             // HTTP 요청 메소드 설정
-            con.setRequestMethod("POST");
-            con.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
 
             // HTTP 요청에 필요한 파라미터 설정
             String postParams = "grant_type=authorization_code" +
                     "&client_id=" + "73b235263e9c55fb4e85a97648c1c0de" +
                     "&redirect_uri=" + "http://192.168.0.21:8080/user/kakaoLogin" +
                     "&code=" + authorize_code;
-            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
 
             System.out.println("전달 파라미터 확인.. :: "+postParams);
             // HTTP 요청 본문에 파라미터 추가
-            con.setDoOutput(true);
-            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+            conn.setDoOutput(true);
+            DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
             wr.writeBytes(postParams);
             wr.flush();
 
-            int responseCode = con.getResponseCode();
+            int responseCode = conn.getResponseCode();
             System.out.println("responseCode :: "+responseCode);
 
             if(responseCode == 200){
-                InputStream inputStream = con.getInputStream();
+                InputStream inputStream = conn.getInputStream();
                 BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 
                 String line;
@@ -150,6 +151,65 @@ public class UserService {
             System.out.println("access_token 발급 완료 :: "+access_token);
             System.out.println("refresh_token 발급 완료 :: "+refresh_token);
         return access_token;
+    }
+
+    public Map<String, Object> getKakaoInfo(String access_token) throws Exception {
+        Map<String, Object> userInfo = new HashMap<>();
+        String url = "https://kapi.kakao.com/v2/user/me";
+
+        URL apiurl;
+        apiurl = new URL(url);
+
+        HttpURLConnection con = (HttpURLConnection) apiurl.openConnection();
+        con.setRequestMethod("GET");
+        con.setDoOutput(true);
+        con.setRequestProperty("Authorization", "Bearer " + access_token);
+        con.setRequestProperty("Content-type","application/x-www-form-urlencoded;charset=utf-8");
+
+        System.out.println(con);
+
+        int responseCode = con.getResponseCode();
+        System.out.println("responseCode :: "+responseCode);
+
+        if(responseCode == 200) {
+            InputStream inputStream = con.getInputStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+
+            String line;
+            String responseBody = "";
+            while ((line = br.readLine()) != null) {
+                responseBody += (line);
+            }
+            br.close();
+            System.out.println("responseBody :: " + responseBody);
+            ObjectMapper mapper = new ObjectMapper(); // jsonSimple 사용
+            Map<String, Object> kakao_info = mapper.readValue(responseBody, Map.class);
+            System.out.println("kakao_info : " + kakao_info);
+            Map<Object, Object> properties = (Map<Object, Object>) kakao_info.get("properties");
+            System.out.println("properties :: "+properties);
+            String id = kakao_info.get("id").toString();
+            String email = kakao_info.get("email").toString();
+            String profilePhoto = properties.get("profile_image").toString();
+            String name = properties.get("nickname").toString();
+            userInfo.put("id",id);
+            userInfo.put("email",email);
+            userInfo.put("profilePhoto",profilePhoto);
+            userInfo.put("name",name);
+
+            if ( checkUserId(id) != false){
+                User user = new User();
+                user.setUserId(id);
+                user.setPassword(id);
+                user.seteMail(email);
+                user.setUserName(name);
+                user.setProfilePhoto(profilePhoto);
+
+                userDAO.addSNSUser(user);
+
+            }
+        }
+
+            return userInfo;
     }
 
     public String getAccessToken(String authorize_code) throws IOException {
