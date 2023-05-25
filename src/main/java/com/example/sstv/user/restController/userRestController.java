@@ -97,6 +97,15 @@ public class userRestController {
         return data;
     }
 
+    @GetMapping(value="loginCheck")
+    public Data loginSessionCheck(HttpSession session){
+        System.out.println("login session 체크");
+        session.getAttribute("user");
+        System.out.println("session check :: "+session.getAttribute("user"));
+        Data data = new Data("success","");
+        return data;
+    }
+
     @GetMapping(value = "logout")
     public Data logout(HttpSession session){
         System.out.println("logout.. BYEBYE!");
@@ -151,7 +160,8 @@ public class userRestController {
     }
 
     @PostMapping (value="findId")
-    public Data findId(@RequestParam String phone){
+    public Data findId(@RequestBody String phone){
+        System.out.println("phone :: "+phone);
         System.out.println("아이디 찾기");
 
         Data data = new Data("success", userService.findId(phone));
