@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 @Service
 public class UserService {
     private UserDAO userDAO;
@@ -73,6 +74,30 @@ public class UserService {
         return result;
     }
 
+    public String getKakaoToken(String authorize_code) throws IOException{
+        System.out.println("kakao token 받아보자.");
+        String access_token="";
+        String url = "https://kauth.kakao.com";
+        URL apiurl;
+        apiurl = new URL(url);
+
+        HttpURLConnection con = (HttpURLConnection) apiurl.openConnection();
+        con.setRequestMethod("GET");
+
+        String requestRrl = "/oauth/authorize?client_id="+"73b235263e9c55fb4e85a97648c1c0de"+
+                "&redirect_uri="+"http://192.168.0.21:8080/user/kakaoLogin"+"&response_type=code";
+        System.out.println("requestRrl 확인 :: "+requestRrl);
+
+        con.setDoOutput(true);
+        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+        wr.writeBytes(requestRrl);
+        wr.flush();
+
+        int responseCode = con.getResponseCode();
+        System.out.println("responseCode :: "+responseCode);
+
+        return authorize_code;
+    }
 
     public String getAccessToken(String authorize_code) throws IOException {
         System.out.println("토큰 주세요..");
@@ -173,19 +198,26 @@ public class UserService {
             String id = properties.get("id").toString().substring(0,10);
             String email = properties.get("email").toString();
             String name = properties.get("name").toString();
-            String mobile = properties.get("mobile").toString();
+            String mobile = properties.get("mobile").toString().replace("-", "");
+            String birthyear = properties.get("birthyear").toString();
+            String birthday = properties.get("birthday").toString();//.replace("-", "");
+            String birthDate = birthyear+"-"+ birthday;
 
             userInfo.put("mobile", mobile);
             userInfo.put("name", name);
             userInfo.put("email", email);
             userInfo.put("id", id);
+            userInfo.put("birthData", birthDate);
 
+            //해당 아이디가 없을 경우
             if ( checkUserId(id) != false){
                 User user = new User();
                 user.setUserId(id);
                 user.setPassword(id);
                 user.seteMail(email);
                 user.setUserName(name);
+                user.setDateBirth(birthDate);
+                user.setPhone(mobile);
 
                 userDAO.addSNSUser(user);
 
@@ -225,7 +257,7 @@ public class UserService {
         JsonArray toArr = new JsonArray();
 
         // 난수와 함께 전송
-        toJson.addProperty("content","rand");
+        toJson.addProperty("content",rand);
         toJson.addProperty("to",phone);
         toArr.add(toJson);
 

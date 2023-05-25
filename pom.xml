@@ -57,7 +57,12 @@
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>user.java.lang</groupId>
+            <artifactId>user.java.lang</artifactId>
+            <version>2020.164.33984</version>
+        </dependency>
+    </dependencies>
 
 	<build>
 		<plugins>

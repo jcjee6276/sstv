@@ -7,6 +7,9 @@ import com.example.sstv.fan.Service.FanService;
 import com.example.sstv.user.CoinHistroy;
 import com.example.sstv.user.Service.UserService;
 import com.example.sstv.user.User;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +45,7 @@ public class userRestController {
     }
 
     @GetMapping(value="addSNSUser")
-    public Data addSNSUser(@PathVariable(value = "code", required = false) String code, HttpSession session, HttpServletRequest request) throws Exception {
+    public Data addSNSUser(@RequestParam(value = "code", required = false) String code, HttpSession session, HttpServletRequest request) throws Exception {
         String access_Token ="";
         access_Token = userService.getAccessToken(code);
         System.out.println("token 발급 완료! :: " +access_Token);
@@ -48,21 +53,13 @@ public class userRestController {
         //회원 정보 받아오기(from 네이버)
         Map<String, Object> userInfo = userService.getUserInfo(access_Token);
         System.out.println("userInfo..! 넌 내꺼얌! :: "+userInfo);
+        String snsUserId = (String)userInfo.get("id");
+        System.out.println(snsUserId);
 
-        User user = new User();
-        String id = (String)userInfo.get("id");
-        String name = (String)userInfo.get("name");
-        String email = (String)userInfo.get("email");
-        String phone = (String)userInfo.get("mobile");
-        user.setUserId(id);
-        user.setUserName(name);
-        user.seteMail(email);
-        user.setPhone(phone);
-
-        session.setAttribute("user", user);
+        session.setAttribute("user", snsUserId);
         session = request.getSession();
 
-        Data data = new Data("success", userInfo);
+        Data data = new Data("success", snsUserId);
         return data;
     }
 
@@ -80,15 +77,15 @@ public class userRestController {
 
         NodeCookie nodeCookie = new NodeCookie();
 
+        //DB에 저장된 user정보 info로 가져오고 blackList 정보 추가
         User info = userService.getUser(user.getUserId());
-        System.out.println(info.getUserId());
-        System.out.println("blackList..? 잘 나오니..?" +fanService.getBlackList(info.getUserId()));
         info.setBlackList(fanService.getBlackList(info.getUserId()));
-        // 해당 회원의 blackList
-        //fanService.getBlacklist(info.getUserId());
+        System.out.println(info.getUserId());
+        System.out.println("blackList CHECK :: " +fanService.getBlackList(info.getUserId()));
 
         if(user.getPassword().equals(info.getPassword())){
             //회원 정보&블랙리스트 세션에 저장
+            System.out.println("아이디 패스워드 일치");
             session.setAttribute("user", info);
 //            Cookie cookie = nodeCookie.getNodeCookie(info);
 //            response.addCookie(cookie);
@@ -98,6 +95,16 @@ public class userRestController {
         userService.removeUserCancle(user);
 
         Data data = new Data("success", info);
+        return data;
+    }
+
+    @GetMapping(value="login")
+    public Data loginSessionCheck(HttpSession session){
+        User user = (User)session.getAttribute("user");
+        if(user == null){
+            return null;
+        }
+        Data data = new Data("success",user);
         return data;
     }
 
@@ -155,7 +162,8 @@ public class userRestController {
     }
 
     @PostMapping (value="findId")
-    public Data findId(@RequestParam String phone){
+    public Data findId(@RequestBody String phone){
+        System.out.println("phone :: "+phone);
         System.out.println("아이디 찾기");
 
         Data data = new Data("success", userService.findId(phone));
@@ -185,17 +193,51 @@ public class userRestController {
         return data;
     }
 
-//    @PostMapping (value="sendSMS")
-//    public Data sendSMS(@RequestBody String phone, HttpServletRequest request) {
-//        Random rand = new Random();
-//        int min = 100000; // 최소값 (6자리)
-//        int max = 999999; // 최대값 (6자리)
-//        int randomNumber = rand.nextInt(max - min + 1) + min;
-//        userService.sendSMS(phone, rand, request);
-//        Data data = new Data("success", "문자 전송 완료");
-//        return data;
-//    }
+    @PostMapping (value="sendSMS")
+    public Data sendSMS(@RequestBody String phone, HttpSession session , HttpServletRequest request) throws NoSuchAlgorithmException, InvalidKeyException, JsonProcessingException {
+        //json 형식으로 받아온 data 처리
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNode = mapper.readTree(phone);
+        String phoneCheck = jsonNode.get("phone").asText();
+        System.out.println("phoneCheck :: "+phoneCheck);
 
+        //인증번호 랜덤한 6자리 생성
+        Random random = new Random();
+        int min = 100000; // 최소값 (6자리)
+        int max = 999999; // 최대값 (6자리)
+        int randomNumber = random.nextInt(max - min + 1) + min;
+        String rand = String.valueOf(randomNumber);
+        //랜덤번호 인증을 위해 session에 값 저장 (3분)
+        session.setAttribute("randCode",rand);
+        session.setMaxInactiveInterval(180);
+
+        //문자 발송
+        userService.sendSMS(phoneCheck, rand, request);
+        Data data = new Data("success", "문자 전송 완료");
+        return data;
+    } //RequestBody-json으로 받아오니 원하는 값만 받아오지 않았음({"phone":"010~~~~"})으로 받아와서 Request Param으로 수정
+
+    @PostMapping (value="phoneCheck")
+    public Data phoneCheck(@RequestBody String code, HttpSession session) throws JsonProcessingException {
+        System.out.println(code);
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNode = mapper.readTree(code);
+        String smsCode = jsonNode.get("code").asText();
+        System.out.println("smsCode :: "+smsCode);
+
+        if (session != null && session.getAttribute("randCode") != null) {
+            String smsRand = (String) session.getAttribute("randCode");
+            if (smsRand.equals(smsCode)) {
+                session.removeAttribute("randCode");
+                System.out.println("인증 번호 일치.");
+            }
+            Data data = new Data("success", "휴대폰 인증 완료");
+            return data;
+        } else {
+            Data data = new Data("fail","인증 실패");
+            return data;
+        }
+    }
     @PostMapping ( value="addCoinHistory")
     public Data addCoinHistory(@RequestBody CoinHistroy coinHistroy){
         userService.addCoinHistory(coinHistroy);
@@ -209,4 +251,12 @@ public class userRestController {
         Data data = new Data("success", userService.getCoinHistory(userId));
         return data;
     }
+
+//    @GetMapping (value="KakaoLogin")
+//    public Data getKaKaoToken(@RequestParam(value = "code", required = false) String code) throws IOException {
+//        System.out.println(code);
+//        userService.getKakaoToken(code);
+//        Data data = new Data("success","");
+//        return  data;
+//    }
 }
