@@ -14,6 +14,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -162,11 +163,24 @@ public class userRestController {
     }
 
     @PostMapping (value="findId")
-    public Data findId(@RequestBody String phone){
-        System.out.println("phone :: "+phone);
-        System.out.println("아이디 찾기");
+    public Data findId(@RequestBody String phone) throws Exception {
+        System.out.println("phone..? "+phone);
+        //json 형식으로 받아온 data 처리
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNode = mapper.readTree(phone);
+        String phoneNum = jsonNode.get("phone").asText();
+        System.out.println("phone :: "+phoneNum);
 
-        Data data = new Data("success", userService.findId(phone));
+        String userId = userService.findId(phoneNum).getUserId();
+
+        if(userService.getUser(userId).getUserType() == 1) {
+            System.out.println("해당 회원은 sns회원");
+            userId = null;
+        }
+
+        System.out.println("userService.findId(phone) :: " +userId);
+
+        Data data = new Data("success", "userId");
         return data;
     }
 

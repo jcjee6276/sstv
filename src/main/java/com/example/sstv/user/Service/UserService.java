@@ -154,7 +154,7 @@ public class UserService {
     }
 
     public Map<String, Object> getKakaoInfo(String access_token) throws Exception {
-        Map<String, Object> userInfo = new HashMap<>();
+        Map<String, Object> kakaoUserInfo = new HashMap<>();
         String url = "https://kapi.kakao.com/v2/user/me";
 
         URL apiurl;
@@ -186,15 +186,22 @@ public class UserService {
             Map<String, Object> kakao_info = mapper.readValue(responseBody, Map.class);
             System.out.println("kakao_info : " + kakao_info);
             Map<Object, Object> properties = (Map<Object, Object>) kakao_info.get("properties");
+            Map<Object, Object> kakao_account = (Map<Object, Object>) kakao_info.get("kakao_account");
             System.out.println("properties :: "+properties);
             String id = kakao_info.get("id").toString();
-            String email = kakao_info.get("email").toString();
+            String email = kakao_account.get("email").toString();
             String profilePhoto = properties.get("profile_image").toString();
             String name = properties.get("nickname").toString();
-            userInfo.put("id",id);
-            userInfo.put("email",email);
-            userInfo.put("profilePhoto",profilePhoto);
-            userInfo.put("name",name);
+
+            System.out.println(id);
+            System.out.println(email);
+            System.out.println(profilePhoto);
+            System.out.println(name);
+
+            kakaoUserInfo.put("id",id);
+            kakaoUserInfo.put("email",email);
+            kakaoUserInfo.put("profilePhoto",profilePhoto);
+            kakaoUserInfo.put("name",name);
 
             if ( checkUserId(id) != false){
                 User user = new User();
@@ -207,9 +214,14 @@ public class UserService {
                 userDAO.addSNSUser(user);
 
             }
+            System.out.println("id :: "+id);
+            System.out.println("email :: "+email);
+            System.out.println("profilePhoto :: "+profilePhoto);
+            System.out.println("name :: "+name);
+
         }
 
-            return userInfo;
+            return kakaoUserInfo;
     }
 
     public String getAccessToken(String authorize_code) throws IOException {
