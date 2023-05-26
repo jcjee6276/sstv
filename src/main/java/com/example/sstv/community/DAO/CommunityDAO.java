@@ -24,7 +24,7 @@ public interface CommunityDAO {
 
     void deleteComments(int commentsNo);
 
-    List<Community> getWritingList();
+    List<Community> getWritingList(String hostUserId);
 
-    int getWritingCount();
+    int getWritingCount(String hostUserId);
 }

@@ -52,17 +52,18 @@ public class CommunityService {
         communityDao.deleteComments(writingNo);
     }
 
-    public Map<String, Object> getWritingList() {
-        List<Community> list = (List<Community>) communityDao.getWritingList();
+    public Map<String, Object> getWritingList(String hostUserId) {
+        List<Community> list = (List<Community>) communityDao.getWritingList(hostUserId);
 
         Map<String, Object> map = new HashMap<String,Object>();
+
         map.put("list", list);
 
         return map;
     }
 
-    public int getWritingCount() {
-        int count = communityDao.getWritingCount();
+    public int getWritingCount(String hostUserId) {
+        int count = communityDao.getWritingCount(hostUserId);
         return count;
     }
 }
