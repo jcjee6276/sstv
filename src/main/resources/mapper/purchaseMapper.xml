@@ -1,53 +1,49 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-
-<!-- type에는 사용하려는 domain의 경로를 적어여한다. -->
 <mapper namespace="com.example.sstv.deal.DAO.PurchaseDAO">
-
     <resultMap id="purchaseSelectMap" type="com.example.sstv.deal.Purchase">
-        <result property="paymentNo" 		column="payment_no" 			jdbcType="NUMERIC" />
-        <result property="paymentAmount" 		column="payment_amount" 	jdbcType="NUMERIC" />
-        <result property="paymentDate"     column="payment_date"            jdbcType="TIMESTAMP" />
-        <result property="paymentMethod"     column="payment_method"       jdbcType="NUMERIC" />
-<!--        <result property="impUid" column="imp_uid" jdbcType="VARCHAR"/>-->
-<!--        <result property="receivePhone" column="receive_phone" jdbcType="VARCHAR"/>-->
-<!--        <result property="merchantUid" column="merchant_uid" jdbcType="VARCHAR"/>-->
-<!--        <result property="userId" column="user_id" jdbcType="VARCHAR" /> 넣어줘야할까?-->
+        <id property="paymentNo" column="payment_no" jdbcType="NUMERIC" />
+        <result property="paymentAmount" column="payment_amount" jdbcType="NUMERIC" />
+        <result property="paymentDate" column="payment_date" jdbcType="TIMESTAMP" />
+        <result property="paymentMethod" column="payment_method" jdbcType="NUMERIC" />
+        <result property="impUid" 				column="imp_uid" 	jdbcType="VARCHAR" />
+        <result property="merchantUid" 		column="merchant_uid" 	jdbcType="VARCHAR" />
         <association property="user" resultMap="userSelectMap">
-            <result property="userId"   column="user_id" jdbcType="VARCHAR" />
-            <result property="coin"     column="coin" jdbcType="NUMERIC" />
-            <result property="phone"    column="phone" jdbcType="VARCHAR" />
+            <id property="userId" column="user_id" jdbcType="VARCHAR" />
+            <result property="coin" column="coin" jdbcType="NUMERIC" />
+            <result property="userNickname" column="user_nickname" jdbcType="VARCHAR" />
+            <result property="phone" column="phone" jdbcType="VARCHAR" />
         </association>
     </resultMap>
-    <!--   필요한 데이터 impUid ,merchantUid ,receivePhone(user에 있지만 넣을 값떄문에 넣어줘야함)  -->
 
     <resultMap id="userSelectMap" type="com.example.sstv.user.User">
-        <result property="userId" column="user_id" jdbcType="VARCHAR" />
+        <id property="userId" column="user_id" jdbcType="VARCHAR" />
         <result property="coin" column="coin" jdbcType="NUMERIC" />
         <result property="userNickname" column="user_nickname" jdbcType="VARCHAR" />
-        <result property="phone"    column="phone" jdbcType="VARCHAR" />
+        <result property="phone" column="phone" jdbcType="VARCHAR" />
     </resultMap>
 
-    <!-- 결제내역리스트 -->
-    <select id="getPurchaseList" parameterType="int" resultMap="purchaseSelectMap">
+    <select id="getPurchaseList" parameterType="String" resultMap="purchaseSelectMap">
         SELECT
         payment_no, payment_date, payment_amount, payment_method,
         p.user_id, u.coin
         FROM PURCHASE p
         JOIN USER u ON p.user_id = u.user_id
-        WHERE payment_no = #{paymentNo}
-        ORDER BY payment_no ASC
+        WHERE p.user_id = #{userId}
+        ORDER BY user_id ASC
     </select>
-    <!-- 결제하기 (아임포트)-->
-    <insert id="addPurchase" parameterType="com.example.sstv.deal.Purchase">
-        INSERT INTO PURCHASE (user_id, payment_no, payment_amount, payment_date, payment_method)
-        VALUES (#{userId}, #{paymentNo}, #{paymentAmount}, #{paymentDate}, #{paymentMethod} )
 
-        <!--   필요한 데이터 impUid ,merchantUid ,phone(user에 있지만 넣을 값떄문에 넣어줘야할까?)  -->
+    <insert id="addPurchase" parameterType="com.example.sstv.deal.Purchase">
+        INSERT INTO PURCHASE (user_id, payment_no, payment_amount, payment_date, payment_method, imp_uid, merchant_uid)
+        VALUES (#{userId}, #{paymentNo}, #{paymentAmount}, NOW(), #{paymentMethod}, #{impUid}, #{merchantUid})
     </insert>
+<!--    <update id="addCoin" parameterType="com.example.sstv.user.User">-->
+<!--        UPDATE USER-->
+<!--        SET coin = coin + #{paymentAmount}-->
+<!--        WHERE user_id = #{userId}-->
+<!--    </update>-->
 
 </mapper>

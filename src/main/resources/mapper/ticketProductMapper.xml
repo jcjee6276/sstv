@@ -15,12 +15,18 @@
     </resultMap>
 
 
-
-    <select id="getTicketProductAdminList" parameterType="int" resultMap="TicketProductSelectMap">
+    <select id="getTicketProductAdminList"  resultMap="TicketProductSelectMap">
         SELECT
-        ticket_prod_no, ticket_name ,price
+        *
+        FROM TICKET_PRODUCT
+    </select>
+
+    <select id="getTicketProductAdmin"  parameterType="int" resultMap="TicketProductSelectMap">
+        SELECT
+        *
         FROM TICKET_PRODUCT
         WHERE ticket_prod_no = #{ticketProdNo}
+        ORDER BY ticket_prod_no ASC
     </select>
 
     <insert id="addTicketProductAdmin" parameterType="com.example.sstv.deal.TicketProduct">
@@ -28,9 +34,22 @@
         VALUE( #{ticketProdNo}, #{ticketName},#{price})
     </insert>
 
-    <delete id="removeTicketProductAdmin" parameterType="com.example.sstv.deal.TicketProduct">
-        DELETE FROM TICKET_PRODUCT
-        WHERE ticket_prod_no = #{ticketProdNo}
+
+<!--  foreign key   coinhistory  연동 ...  삭제가 안됨 상위테이블에서 삭제 불가능  -->
+    <delete id="removeTicketProductAdmin">
+        DELETE from TICKET_PRODUCT where ticket_prod_no = #{ticketProdNo}
     </delete>
+<!-- 삭제가 안돼서 update 추가 -->
+    <update id="updateTicketProductAdmin" parameterType="com.example.sstv.deal.TicketProduct">
+        UPDATE TICKET_PRODUCT
+        <set>
+            ticket_prod_no =#{ticketProdNo},
+            ticket_name =#{ticketName},
+            price  = #{price}
+        </set>
+        WHERE ticket_prod_no = #{ticketProdNo}
+    </update>
+
+
 
 </mapper>

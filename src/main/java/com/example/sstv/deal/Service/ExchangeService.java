@@ -26,9 +26,11 @@ public class ExchangeService {
         exchangeDAO.addExchange(exchange);
     }
 
+
     public Exchange getExchangeRequestList(Exchange exchange){
         return exchangeDAO.getExchangeRequestList(exchange);
     }
+
     public void exchangeAcc(Exchange exchange) throws  Exception{
          exchangeDAO.exchangeAcc(exchange);
     }

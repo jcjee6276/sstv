@@ -24,7 +24,7 @@ public class TicketRestController {
     @PostMapping(value = "addTicket")
     public Data addTicket(@RequestBody Ticket ticket) throws Exception {
         ticketService.addTicket(ticket);
-        Data data = new Data("success", "티켓구매하기");
+        Data data = new Data("success", "티켓 구매하기");
 
         return data;
     }
@@ -32,8 +32,10 @@ public class TicketRestController {
     public Data getTicketList(@PathVariable String userId) throws Exception {
         System.out.println("이용권 목록리스트");
 
-        Data data = new Data("success", ticketService.getTicketList((userId)));
-        return data;
+        List<Ticket> ticketList =ticketService.getTicketList(userId);
+        Data data = new Data("success", ticketList);
+
+        return  data;
 
     }
     @PostMapping (value ="useTicket")

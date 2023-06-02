@@ -13,7 +13,26 @@ public class Purchase {
 
     private String userId;
 
+    private int coin;
+    private String impUid;
 
+    public String getImpUid() {
+        return impUid;
+    }
+
+    public void setImpUid(String impUid) {
+        this.impUid = impUid;
+    }
+
+    public String getMerchantUid() {
+        return merchantUid;
+    }
+
+    public void setMerchantUid(String merchantUid) {
+        this.merchantUid = merchantUid;
+    }
+
+    private String merchantUid;
 
     @Override
     public String toString() {
@@ -24,7 +43,18 @@ public class Purchase {
                 ", paymentMethod=" + paymentMethod +
                 ", user=" + user +
                 ", userId='" + userId + '\'' +
+                ", coin=" + coin +
+                ", impUid='" + impUid + '\'' +
+                ", merchantUid='" + merchantUid + '\'' +
                 '}';
+    }
+
+    public int getCoin() {
+        return coin;
+    }
+
+    public void setCoin(int coin) {
+        this.coin = coin;
     }
 
     public String getUserId() {

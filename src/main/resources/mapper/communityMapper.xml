@@ -71,12 +71,11 @@
         ORDER BY reg_date desc
     </select>
 
-    <select 	id="getWritingCount"	resultType="int">
+    <select id="getWritingCount"	resultType="int">
         SELECT
         COUNT(*) AS writing_no
         FROM WRITING
         WHERE host_user_id = #{hostUserId}
-
     </select>
 
     <delete  id="deleteWriting" >
