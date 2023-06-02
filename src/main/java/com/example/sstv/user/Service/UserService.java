@@ -50,15 +50,17 @@ public class UserService {
     public List<User> getAdminUserlist(Search search) {
         return userDAO.getAdminUserlist(search);
     }
-    public void removeUserStart(User user) {
-        userDAO.removeUserStart(user);
+    public void removeUserStart(String userId) {
+        userDAO.removeUserStart(userId);
     }
-    public void removeUserCancle(User user) {
-        userDAO.removeUserCancle(user);
+    public void removeUserCancle(String userId) {
+        userDAO.removeUserCancle(userId);
     }
     public void updateUser(User user) {
         userDAO.updateUser(user);
     }
+
+    public void uploadFile(User user) {userDAO.uploadFile(user);}
     public boolean checkUserId(String userId) {
         boolean result=true;
         User user=userDAO.getUser(userId);
@@ -69,7 +71,8 @@ public class UserService {
     }
     public boolean checkUserNickname(String userNickname) {
         boolean result=true;
-        User user=userDAO.getUser(userNickname);
+        System.out.println("닉네임 중복체크 service :: "+userNickname);
+        User user=userDAO.getUserNickname(userNickname);
         if(user != null) {
             result=false; //--> 사용할 수 있을 경우 true
         }

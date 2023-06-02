@@ -66,7 +66,7 @@
         SELECT
         user_nickname
         FROM USER
-        WHERE user_id = #{value}
+        WHERE user_nickname = #{value}
         ORDER BY user_nickname ASC
     </select>
 
@@ -127,15 +127,24 @@
     <update id="updateUser" parameterType="com.example.sstv.user.User" >
         UPDATE USER
         <set>
-            <if test="userType == 0">
+            <if test="userType == 0 and password !=''">
                 passwd = #{password},
             </if>
             <if test="userType == 1">
                 passwd = #{userId},
             </if>
-            profile_photo = #{profilePhoto},
-            user_nickname = #{userNickname},
-            email = #{eMail}
+            <if test="profilePhoto !=''">
+                profile_photo = #{profilePhoto},
+            </if>
+            <if test="userNickname !=''">
+                user_nickname = #{userNickname},
+            </if>
+            <if test="eMail !=''">
+                email = #{eMail}
+            </if>
+            <if test="coin !=''">
+                coin = #{coin}
+            </if>
         </set>
         WHERE user_id = #{userId}
     </update>
@@ -154,5 +163,11 @@
         FROM COIN_HISTORY c, USER u
         WHERE c.user_id = #{userId} AND c.user_id = u.user_id
     </select>
+
+    <update id="uploadFile" parameterType="com.example.sstv.user.User" >
+        UPDATE USER
+        SET profile_photo = #{profilePhoto}
+        WHERE = #{userId}
+    </update>
 
 </mapper>

@@ -17,14 +17,12 @@ import jakarta.servlet.http.HttpSession;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @RestController
 @RequestMapping("/user/*")
@@ -93,7 +91,7 @@ public class userRestController {
         }
 //        List<String> blackList = fanService.getBlackList(info.getUserId()).getBlackUser();
         //로그인되며, 회원탈퇴 절차 취소
-        userService.removeUserCancle(user);
+        userService.removeUserCancle(info.getUserId());
 
         Data data = new Data("success", info);
         return data;
@@ -102,6 +100,7 @@ public class userRestController {
     @GetMapping(value="login")
     public Data loginSessionCheck(HttpSession session){
         User user = (User)session.getAttribute("user");
+        System.out.println("로그인 중인 유저 아이디 :: "+user);
         if(user == null){
             return null;
         }
@@ -118,12 +117,14 @@ public class userRestController {
         return data;
     }
 
-    @PostMapping(value = "removeUserStart")
-    public Data removeUserStart(@RequestBody User user){
-        System.out.println("removeUser Start");
-        userService.removeUserStart(user);
+    @GetMapping(value = "removeUserStart")
+    public Data removeUserStart(HttpSession session){
+        User user = (User)session.getAttribute("user");
+        String userId = user.getUserId();
+        System.out.println("removeUser Start :: "+userId);
+        userService.removeUserStart(userId);
 
-        Data data = new Data("success", user);
+        Data data = new Data("success", userId);
         return data;
     }
 
@@ -138,26 +139,28 @@ public class userRestController {
 
     @GetMapping(value="checkUserId/{userId}")
     public Data checkUserId(@PathVariable String userId){
-        System.out.println("아이디Check");
+        System.out.println("아이디 Check :: "+userId);
         String isEnabled;
         if (userService.checkUserId(userId) == true){
-            isEnabled = "useOK";
+            isEnabled = "useOk";
         }else{
             isEnabled = "useNo";
         }
+        System.out.println("사용 가능 여부는 ?? "+isEnabled);
         Data data = new Data("success", isEnabled);
         return data;
     }
 
-    @GetMapping(value="checkUserNickname/{UserNickname}")
-    public Data checkUserNickname(@PathVariable String UserNickname){
-        System.out.println("닉네임Check");
+    @GetMapping(value="checkUserNickname/{userNickname}")
+    public Data checkUserNickname(@PathVariable String userNickname){
+        System.out.println("닉네임 Check :: "+userNickname);
         String isEnabled;
-        if (userService.checkUserNickname(UserNickname) == true){
-            isEnabled = "useOK";
+        if (userService.checkUserNickname(userNickname) == true){
+            isEnabled = "useOk";
         }else{
             isEnabled = "useNo";
         }
+        System.out.println("사용 가능 여부는 ?? "+isEnabled);
         Data data = new Data("success", isEnabled);
         return data;
     }
@@ -238,19 +241,22 @@ public class userRestController {
         JsonNode jsonNode = mapper.readTree(code);
         String smsCode = jsonNode.get("code").asText();
         System.out.println("smsCode :: "+smsCode);
+        System.out.println("sessionCode :: "+session.getAttribute("randCode"));
+        String success = "";
 
         if (session != null && session.getAttribute("randCode") != null) {
             String smsRand = (String) session.getAttribute("randCode");
             if (smsRand.equals(smsCode)) {
                 session.removeAttribute("randCode");
                 System.out.println("인증 번호 일치.");
+                success = "success";
+            }else{
+                success = "fail";
             }
-            Data data = new Data("success", "휴대폰 인증 완료");
-            return data;
-        } else {
-            Data data = new Data("fail","인증 실패");
-            return data;
         }
+            System.out.println("인증 성공 여부 ::"+success);
+            Data data = new Data("success",success);
+            return data;
     }
     @PostMapping ( value="addCoinHistory")
     public Data addCoinHistory(@RequestBody CoinHistroy coinHistroy){
@@ -281,6 +287,21 @@ public class userRestController {
         Data data = new Data("success",kakaoUserInfo);
         return data;
     }
+
+//    @PostMapping (value = "uploadFile")
+//    public Data uploadFile(@RequestBody MultipartFile file, @RequestBody User user) throws IOException{
+//        String originalFilename = file.getOriginalFilename();
+//        String filename = originalFilename.substring(originalFilename.lastIndexOf("."));
+//        String profilePhoto = UUID.randomUUID().toString() + filename;
+//
+//        System.out.println("저장될 파일 명 :: "+profilePhoto);
+//
+//        userService.uploadFile(user);
+//
+//        Data data = new Data("success", "fileUpload 성공");
+//        return data;
+//
+//    }
 
 
 }
