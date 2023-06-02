@@ -17,14 +17,16 @@ public interface UserDAO {
     void addUser(User user);
     void addSNSUser(User user);
     User getUser(String userId);
-    User getUserNickname(String userId);
+    User getUserNickname(String userNickname);
     User findId(String phone);
     void findPasswd(User user);
     List<User> getAdminUserlist(Search search);
-    void removeUserStart(User user);
-    void removeUserCancle(User user);
+    void removeUserStart(String userId);
+    void removeUserCancle(String userId);
     void updateUser(User user);
     void addCoinHistory(CoinHistroy coinHistroy);
     List<CoinHistroy> getCoinHistory(String userId);
+
+    void uploadFile(User user);
 
 }
