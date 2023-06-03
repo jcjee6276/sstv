@@ -130,7 +130,7 @@ public class userRestController {
 
     @PostMapping(value="updateUser")
     public Data updateUser(@RequestBody User user){
-        System.out.println("updateUser..!");
+        System.out.println("updateUser..!"+user);
         userService.updateUser(user);
 
         Data data = new Data("success", user);
