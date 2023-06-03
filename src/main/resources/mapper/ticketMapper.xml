@@ -15,6 +15,8 @@
         <result property="ticketDate" column="ticket_date" jdbcType="TIMESTAMP"/>
         <result property="userId" column="user_id" jdbcType="VARCHAR" />
         <result property="ticketProdNo" column="ticket_prod_no" jdbcType="NUMERIC" />
+        <result property="coin" column="coin" jdbcType="NUMERIC" />
+        <result property="ticketName" column="ticket_name" jdbcType="NUMERIC" />
     </resultMap>
 
     <resultMap id="userSelectMap" type="com.example.sstv.user.User">
@@ -25,9 +27,10 @@
 
     <resultMap id="ticketProductSelectMap" type="com.example.sstv.deal.TicketProduct">
         <result property="ticketProdNo" column="ticket_prod_no" jdbcType="NUMERIC" />
-        <result property="ticketName" column="ticket_name" jdbcType="VARCHAR" />
+        <result property="ticketName" column="ticket_name" jdbcType="NUMERIC" />
         <result property="price" column="price" jdbcType="NUMERIC" />
     </resultMap>
+
     <!--  이용권목록 -->
     <select id="getTicketList" parameterType="String" resultMap="ticketSelectMap">
         SELECT
@@ -38,12 +41,13 @@
         JOIN USER u ON t.user_id = u.user_id
         WHERE
         t.user_id = #{userId}
+        ORDER BY t.ticket_no ASC
     </select>
 
     <insert id="addTicket" parameterType="com.example.sstv.deal.Ticket">
         INSERT
         INTO TICKET(user_id, ticket_no, ticket_start, ticket_end,ticket_use,ticket_date,ticket_prod_no )
-        VALUES (#{userId},#{ticketNo}, #{ticketStart}, #{ticketEnd}, #{ticketUse}, #{ticketDate},#{ticketProdNo})
+        VALUES (#{userId},#{ticketNo}, #{ticketStart}, #{ticketEnd}, #{ticketUse}, NOW(),#{ticketProdNo})
     </insert>
 
     <update id="useTicket" parameterType="com.example.sstv.deal.Ticket">
@@ -61,7 +65,12 @@
             </if>
         </set>
         WHERE ticket_no = #{ticketNo}
+        <!--  ticketNo랑 ,ticketProdNo 가 업데이트 되어야 발동 -->
     </update>
 
-
 </mapper>
+
+
+
+
+

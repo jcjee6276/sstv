@@ -16,8 +16,10 @@ import java.util.List;
 public interface TicketDAO {
 
 
-    void addTicket(Ticket ticketNo);
+    void addTicket(Ticket ticket);
     List<Ticket> getTicketList(String userId);
+
+
     void useTicket(Ticket ticketNo);
     void TkRecentCoin(Ticket ticket);
 

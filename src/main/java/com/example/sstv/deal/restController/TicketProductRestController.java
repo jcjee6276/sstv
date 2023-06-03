@@ -8,6 +8,8 @@ import com.example.sstv.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/ticketProduct/*")
 public class TicketProductRestController {
@@ -20,12 +22,12 @@ public class TicketProductRestController {
     @Autowired
     public TicketProductRestController(TicketProductService ticketProductService){this.ticketProductService = ticketProductService;}
 
-    @GetMapping(value = "getTicketProductAdminList/{ticketProductNo}")
-    public Data getTicketProductAdminList(@PathVariable int ticketProductNo) {
-
+    @GetMapping(value = "getTicketProductAdminList")
+    public Data getTicketProductAdminList() {
+        List<TicketProduct> list = ticketProductService.getTicketProductAdminList();
         System.out.println("상품등록(이용권)");
 
-        Data data = new Data("success", ticketProductService.getTicketProductAdminList(ticketProductNo));
+        Data data = new Data("success", list);
         System.out.println(data);
         return data;
     }
@@ -38,11 +40,16 @@ public class TicketProductRestController {
         Data data = new Data("success", "상품등록하기");
         return  data;
     }
-    @PostMapping(value = "removeTicketAdmin")
-    public Data removeTicketAdmin(@RequestBody TicketProduct ticketProduct){
 
-        ticketProductService.removeTicketProductAdmin(ticketProduct);
-        Data data = new Data("success", "상품삭제하기");
-        return data;
+
+
+
+
+    @PostMapping(value = "updateTicketProductAdmin")
+    public Data updateTicketProductAdmin(@RequestBody TicketProduct ticketProduct){
+        ticketProductService.updateTicketProductAdmin(ticketProduct);
+        Data data =new Data("success", ticketProduct);
+        return  data;
     }
+
 }

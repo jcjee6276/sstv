@@ -16,6 +16,14 @@ public class Ticket {
     private TicketProduct ticketProduct;
     private int ticketProdNo;
     private String userId;
+    private int coin;
+    private int ticketName;
+
+    private int price;
+
+    public int getPrice() {
+        return price;
+    }
 
     @Override
     public String toString() {
@@ -29,7 +37,30 @@ public class Ticket {
                 ", ticketProduct=" + ticketProduct +
                 ", ticketProdNo=" + ticketProdNo +
                 ", userId='" + userId + '\'' +
+                ", coin=" + coin +
+                ", ticketName=" + ticketName +
+                ", price=" + price +
                 '}';
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public int getCoin() {
+        return coin;
+    }
+
+    public void setCoin(int coin) {
+        this.coin = coin;
+    }
+
+    public int getTicketName() {
+        return ticketName;
+    }
+
+    public void setTicketName(int ticketName) {
+        this.ticketName = ticketName;
     }
 
     public String getUserId() {

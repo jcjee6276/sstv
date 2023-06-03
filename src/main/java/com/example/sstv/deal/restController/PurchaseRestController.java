@@ -6,31 +6,43 @@ import com.example.sstv.deal.Service.PurchaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/purchase/*")
 public class PurchaseRestController {
-    @Autowired
     private PurchaseService purchaseService;
 
     @Autowired
-    public PurchaseRestController(PurchaseService purchaseService){this.purchaseService= purchaseService;}
+    public PurchaseRestController(PurchaseService purchaseService) {
+        this.purchaseService = purchaseService;
+    }
 
-    @GetMapping(value = "getPurchaseList/{paymentNo}")
-    public Data getPurchaseList(@PathVariable int paymentNo)throws Exception {
-        System.out.println("결제 구매 내역");
-        String userId = purchaseService.getPurchaseList(paymentNo).getUserId();
-        System.out.println(userId);
-        Data data = new Data("success", purchaseService.getPurchaseList(paymentNo));
-        System.out.println(data+"getPurchaseList데이터");
+    @GetMapping(value = "getPurchaseList/{userId}")
+    public Data getPurchaseList(@PathVariable String userId) {
+        List<Purchase> purchaseList = purchaseService.getPurchaseList(userId);
+
+        Data data = new Data("success", purchaseList);
         return data;
     }
 
-    @PostMapping(value ="addPurchase")
-    public Data addPurchase(@RequestBody Purchase purchase){
-        System.out.println("결제하기");
+    @PostMapping(value = "addPurchase/{userId}")
+    public Data addPurchase(@PathVariable String userId, @RequestBody Purchase purchase) {
+        purchase.setUserId(userId);
 
+        String ImpUid = purchase.getImpUid();
+        String merchantUid = purchase.getMerchantUid();
         purchaseService.addPurchase(purchase);
+        System.out.println("addPurchas rest"+userId+purchase);
         Data data = new Data("success", "결제하기");
         return data;
     }
+    @PostMapping(value = "savePaymentHistory")
+    public Data savePaymentHistory(@RequestBody Purchase purchase) {
+        purchaseService.addPurchase(purchase);
+        Data data = new Data("success", "Payment history saved");
+        return data;
+    }
+
+
 }
