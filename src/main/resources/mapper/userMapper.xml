@@ -133,13 +133,13 @@
             <if test="userType == 1">
                 passwd = #{userId},
             </if>
-            <if test="profilePhoto !=null">
+            <if test="profilePhoto !=null and profilePhoto !=''">
                 profile_photo = #{profilePhoto},
             </if>
-            <if test="userNickname !=null">
+            <if test="userNickname !=null and userNickname !=''">
                 user_nickname = #{userNickname},
             </if>
-            <if test="eMail !=''">
+            <if test="eMail !=null and eMail !=''">
                 email = #{eMail}
             </if>
             <if test="coin !=0">
