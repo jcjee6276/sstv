@@ -127,22 +127,22 @@
     <update id="updateUser" parameterType="com.example.sstv.user.User" >
         UPDATE USER
         <set>
-            <if test="userType == 0 and password !=''">
+            <if test="userType == 0 and password !=null">
                 passwd = #{password},
             </if>
             <if test="userType == 1">
                 passwd = #{userId},
             </if>
-            <if test="profilePhoto !=''">
+            <if test="profilePhoto !=null and profilePhoto !=''">
                 profile_photo = #{profilePhoto},
             </if>
-            <if test="userNickname !=''">
+            <if test="userNickname !=null and userNickname !=''">
                 user_nickname = #{userNickname},
             </if>
-            <if test="eMail !=''">
+            <if test="eMail !=null and eMail !=''">
                 email = #{eMail}
             </if>
-            <if test="coin !=''">
+            <if test="coin !=0">
                 coin = #{coin}
             </if>
         </set>
