@@ -27,6 +27,4 @@ public interface UserDAO {
     void addCoinHistory(CoinHistroy coinHistroy);
     List<CoinHistroy> getCoinHistory(String userId);
 
-    void uploadFile(User user);
-
 }
