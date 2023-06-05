@@ -132,7 +132,7 @@ public class userRestController {
     public Data updateUser(@RequestBody User user){
         System.out.println("updateUser..!");
         userService.updateUser(user);
-
+        System.out.println(user);
         Data data = new Data("success", user);
         return data;
     }

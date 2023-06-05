@@ -24,9 +24,4 @@ public class PurchaseService {
         purchaseDAO.addPurchase(purchase);
     }
 
-//    public void addCoin(String userId, int amount) {
-//        User user = purchaseDAO.getUserById(userId);
-//        user.setCoin(user.getCoin() + amount);
-//        purchaseDAO.updateUser(user);
-//    }
 }

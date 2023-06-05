@@ -56,9 +56,7 @@ public class UserService {
     public void removeUserCancle(String userId) {
         userDAO.removeUserCancle(userId);
     }
-    public void updateUser(User user) {
-        userDAO.updateUser(user);
-    }
+    public void updateUser(User user) {userDAO.updateUser(user);}
 
     public void uploadFile(User user) {userDAO.uploadFile(user);}
     public boolean checkUserId(String userId) {
