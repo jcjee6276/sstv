@@ -183,7 +183,7 @@ public class userRestController {
 
         System.out.println("userService.findId(phone) :: " +userId);
 
-        Data data = new Data("success", "userId");
+        Data data = new Data("success", userService.findId(phoneNum).getUserId());
         return data;
     }
 

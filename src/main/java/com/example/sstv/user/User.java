@@ -20,7 +20,7 @@ public class User {
     private String roll;
     private int coin;
     private int accumulatedViewers;
-    private Time totalStreamingAccumulatedTime;
+    private int totalStreamingAccumulatedTime;
     private int stRoll;
     private int userType;
     private List<String> blackList;
@@ -161,11 +161,11 @@ public class User {
         this.accumulatedViewers = accumulatedViewers;
     }
 
-    public Time getTotalStreamingAccumulatedTime() {
+    public int getTotalStreamingAccumulatedTime() {
         return totalStreamingAccumulatedTime;
     }
 
-    public void setTotalStreamingAccumulatedTime(Time totalStreamingAccumulatedTime) {
+    public void setTotalStreamingAccumulatedTime(int totalStreamingAccumulatedTime) {
         this.totalStreamingAccumulatedTime = totalStreamingAccumulatedTime;
     }
 
