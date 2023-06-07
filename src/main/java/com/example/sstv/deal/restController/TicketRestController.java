@@ -21,8 +21,9 @@ public class TicketRestController {
     public TicketRestController(TicketService ticketProductService){this.ticketService = ticketService;}
 
 
-    @PostMapping(value = "addTicket")
-    public Data addTicket(@RequestBody Ticket ticket) throws Exception {
+    @PostMapping(value = "addTicket/{userId}")
+    public Data addTicket(@PathVariable String userId, @RequestBody Ticket ticket) throws Exception {
+        ticket.setUserId(userId);
         ticketService.addTicket(ticket);
         Data data = new Data("success", "티켓 구매하기");
 
@@ -42,6 +43,7 @@ public class TicketRestController {
     public Data useTicket(@RequestBody Ticket ticketNo) throws Exception {
             System.out.println("useTicket부분");
                 ticketService.useTicket(ticketNo);
+                System.out.println();
                 Data data = new Data("successs", "티켓 사용성공");
                 return data;
 
