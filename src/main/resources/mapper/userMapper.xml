@@ -24,7 +24,7 @@
         <result property="roll"             column="roll"               jdbcType="VARCHAR" />
         <result property="coin"             column="coin"               jdbcType="NUMERIC" />
         <result property="accumulatedViewers"      column="accumulated_viewers"     jdbcType="NUMERIC" />
-        <result property="totalStreamingAccumulatedTime"     column="total_streaming_accumulated_time"      jdbcType="TIME" />
+        <result property="totalStreamingAccumulatedTime"     column="total_streaming_accumulated_time"      jdbcType="NUMERIC" />
         <result property="stRoll"       column="st_roll" jdbcType="NUMERIC" />
         <result property="userType"     column="user_type"  jdbcType="NUMERIC" />
     </resultMap>
@@ -43,14 +43,14 @@
     <insert 	id="addUser"		parameterType="com.example.sstv.user.User" >
         INSERT
         INTO USER( user_id , passwd, profile_photo, user_nickname, user_name, date_birth, email, phone, sign_date, withdrawal, roll, coin, accumulated_viewers, total_streaming_accumulated_time, st_roll, user_type)
-        VALUES	 (	#{userId} , #{password} , #{profilePhoto} , #{userNickname} , #{userName} , #{dateBirth} , #{eMail} , #{phone} , NOW() , 0 , 'user' , 0 , 0 , NULL , 0 , 0)
+        VALUES	 (	#{userId} , #{password} , #{profilePhoto} , #{userNickname} , #{userName} , #{dateBirth} , #{eMail} , #{phone} , NOW() , 0 , 'user' , 0 , 0 , 0 , 0 , 0)
     </insert>
 
     <!-- 회원 가입. -->
     <insert 	id="addSNSUser"		parameterType="com.example.sstv.user.User" >
         INSERT
         INTO USER( user_id , passwd, profile_photo, user_nickname, user_name, date_birth, email, phone, sign_date, withdrawal, roll, coin, accumulated_viewers, total_streaming_accumulated_time, st_roll, user_type)
-        VALUES	 (	#{userId} , #{userId} , #{profilePhoto} , #{userNickname} , #{userName} , #{dateBirth} , #{eMail} , #{phone} , NOW() , 0 , 'user' , 0 , 0 , NULL , 0 , 1)
+        VALUES	 (	#{userId} , #{userId} , #{profilePhoto} , #{userNickname} , #{userName} , #{dateBirth} , #{eMail} , #{phone} , NOW() , 0 , 'user' , 0 , 0 , 0 , 0 , 1)
     </insert>
 
     <!-- 회원 정보 조회. -->
@@ -163,11 +163,5 @@
         FROM COIN_HISTORY c, USER u
         WHERE c.user_id = #{userId} AND c.user_id = u.user_id
     </select>
-
-    <update id="uploadFile" parameterType="com.example.sstv.user.User" >
-        UPDATE USER
-        SET profile_photo = #{profilePhoto}
-        WHERE = #{userId}
-    </update>
 
 </mapper>

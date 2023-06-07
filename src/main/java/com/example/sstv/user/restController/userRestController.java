@@ -183,7 +183,7 @@ public class userRestController {
 
         System.out.println("userService.findId(phone) :: " +userId);
 
-        Data data = new Data("success", "userId");
+        Data data = new Data("success", userService.findId(phoneNum).getUserId());
         return data;
     }
 
@@ -288,20 +288,26 @@ public class userRestController {
         return data;
     }
 
-//    @PostMapping (value = "uploadFile")
-//    public Data uploadFile(@RequestBody MultipartFile file, @RequestBody User user) throws IOException{
-//        String originalFilename = file.getOriginalFilename();
-//        String filename = originalFilename.substring(originalFilename.lastIndexOf("."));
-//        String profilePhoto = UUID.randomUUID().toString() + filename;
-//
-//        System.out.println("저장될 파일 명 :: "+profilePhoto);
-//
-//        userService.uploadFile(user);
-//
-//        Data data = new Data("success", "fileUpload 성공");
-//        return data;
-//
-//    }
+    @PostMapping (value = "uploadFile")
+    public Data uploadFile(@RequestParam("file") MultipartFile file , @RequestParam String userId) throws IOException{
+        String originalFilename = file.getOriginalFilename();
+        String filename = originalFilename.substring(originalFilename.lastIndexOf("."));
+        String profilePhoto = UUID.randomUUID().toString() + filename;
+        
+        System.out.println("저장될 파일 명 :: "+profilePhoto);
+        
+        //파일정보를 유저 DB에 저장
+        User user = new User();
+        user.setUserId(userId);
+        user.setProfilePhoto(profilePhoto);
+
+        userService.updateUser(user);
+        userService.fileUpload(file, profilePhoto);
+
+        Data data = new Data("success", "fileUpload 성공");
+        return data;
+
+    }
 
 
 }
