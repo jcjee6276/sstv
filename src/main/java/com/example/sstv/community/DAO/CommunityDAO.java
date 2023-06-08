@@ -1,5 +1,6 @@
 package com.example.sstv.community.DAO;
 
+import com.example.sstv.common.Search;
 import com.example.sstv.community.Comments;
 import com.example.sstv.community.Community;
 import org.apache.ibatis.annotations.Mapper;
@@ -27,4 +28,6 @@ public interface CommunityDAO {
     List<Community> getWritingList(String hostUserId);
 
     int getWritingCount(String hostUserId);
+
+    List<Search> getSearchWriting(String searchKeyword);
 }

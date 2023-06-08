@@ -309,5 +309,13 @@ public class userRestController {
 
     }
 
+    @GetMapping(value="searchUser/{searchKeyword}")
+    public Data getSearchUser(@PathVariable String searchKeyword) {
+        Map<String, Object> map = userService.getSearchUser(searchKeyword);
+
+        Data data = new Data("success", map.get("list"));
+        return data;
+    }
+
 
 }

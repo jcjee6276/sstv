@@ -27,4 +27,6 @@ public interface UserDAO {
     void addCoinHistory(CoinHistroy coinHistroy);
     List<CoinHistroy> getCoinHistory(String userId);
 
+    List<Search> getSearchUser(String searchKeyword);
+
 }

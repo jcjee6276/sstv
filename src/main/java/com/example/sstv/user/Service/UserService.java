@@ -71,6 +71,13 @@ public class UserService {
     public void updateUser(User user) {
         userDAO.updateUser(user);
     }
+
+    public Map<String, Object> getSearchUser(String searchKeyword) {
+        List<Search> list = userDAO.getSearchUser(searchKeyword);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("list", list);
+        return map;
+    }
     public boolean checkUserId(String userId) {
         boolean result=true;
         User user=userDAO.getUser(userId);

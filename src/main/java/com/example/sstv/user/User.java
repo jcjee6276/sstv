@@ -46,8 +46,19 @@ public class User {
                 ", stRoll=" + stRoll +
                 ", userType=" + userType +
                 ", blackList=" + blackList +
+                ", followCount=" + followCount +
                 '}';
     }
+
+    public int getFollowCount() {
+        return followCount;
+    }
+
+    public void setFollowCount(int followCount) {
+        this.followCount = followCount;
+    }
+
+    private int followCount;
 
     public String getUserId() {
         return userId;
