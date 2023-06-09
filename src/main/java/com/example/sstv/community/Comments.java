@@ -46,13 +46,6 @@ public class Comments {
         this.replayNo = replayNo;
     }
 
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
 
     public Date getRegDate() {
         return regDate;
@@ -65,6 +58,8 @@ public class Comments {
     private String commentsUserId;
     private int writingNo;
 
+    private int replayNo;
+
     @Override
     public String toString() {
         return "Comments{" +
@@ -73,13 +68,20 @@ public class Comments {
                 ", commentsUserId='" + commentsUserId + '\'' +
                 ", writingNo=" + writingNo +
                 ", replayNo=" + replayNo +
-                ", content='" + content + '\'' +
+                ", commentContent='" + commentContent + '\'' +
                 ", regDate=" + regDate +
                 '}';
     }
 
-    private int replayNo;
-    private String content;
+    public String getCommentContent() {
+        return commentContent;
+    }
+
+    public void setCommentContent(String commentContent) {
+        this.commentContent = commentContent;
+    }
+
+    private String commentContent;
     private Date regDate;
 
 

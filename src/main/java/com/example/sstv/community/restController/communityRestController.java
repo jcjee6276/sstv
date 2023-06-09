@@ -96,4 +96,15 @@ public class communityRestController {
         return data;
     }
 
+    @GetMapping(value="searchWriting/{searchKeyword}")
+    public Data getSearchWriting(@PathVariable String searchKeyword) {
+
+        Map<String, Object> map = communityService.getSearchWriting(searchKeyword);
+
+
+        Data data = new Data("success", map.get("list"));
+        System.out.println(map.get("list"));
+        return data;
+    }
+
 }

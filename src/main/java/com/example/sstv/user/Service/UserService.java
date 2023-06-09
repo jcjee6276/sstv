@@ -1,5 +1,15 @@
 package com.example.sstv.user.Service;
 
+import com.amazonaws.SdkClientException;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.sstv.common.Search;
 import com.example.sstv.user.CoinHistroy;
 import com.example.sstv.user.DAO.UserDAO;
@@ -11,12 +21,14 @@ import com.google.gson.JsonObject;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.MulticastSocket;
 import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -60,7 +72,12 @@ public class UserService {
         userDAO.updateUser(user);
     }
 
-    //public void uploadFile(User user) {userDAO.uploadFile(user);}
+    public Map<String, Object> getSearchUser(String searchKeyword) {
+        List<Search> list = userDAO.getSearchUser(searchKeyword);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("list", list);
+        return map;
+    }
     public boolean checkUserId(String userId) {
         boolean result=true;
         User user=userDAO.getUser(userId);
@@ -490,5 +507,57 @@ public class UserService {
     public List<CoinHistroy> getCoinHistory(String userId){
         System.out.println(userId);
         return userDAO.getCoinHistory(userId);
+    }
+    
+    //objectStorage 파일 저장
+    public void fileUpload(MultipartFile file, String profilePhoto) {
+        final String endPoint = "https://kr.object.ncloudstorage.com";
+        final String regionName = "kr-standard";
+        final String accessKey = "z4Xcnb9Fi7MmuSeksVf4";
+        final String secretKey = "nt9eOEVgBxjdmjqOgP9Xee44ADNmEDT171bekE2u";
+
+        System.out.println("파일 업로드 시작 :: "+profilePhoto);
+
+// S3 client
+        final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
+                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+                .build();
+
+        String bucketName = "sstv-image";
+
+// create folder
+//        String folderName = "Profile/";
+//
+//        ObjectMetadata objectMetadata = new ObjectMetadata();
+//        objectMetadata.setContentLength(0L);
+//        objectMetadata.setContentType("application/x-directory");
+//        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, folderName, new ByteArrayInputStream(new byte[0]), objectMetadata);
+//
+//        try {
+//            s3.putObject(putObjectRequest);
+//            System.out.format("Folder %s has been created.\n", folderName);
+//        } catch (AmazonS3Exception e) {
+//            e.printStackTrace();
+//        } catch(SdkClientException e) {
+//            e.printStackTrace();
+//        }
+
+// upload local file
+//        String objectName = "sample-object";
+        String filePath = "192.168.0.21:8080/user/uploadFile/"+profilePhoto;
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(file.getSize());
+
+        try {
+            s3.putObject(bucketName, profilePhoto, file.getInputStream(), metadata);
+            s3.setObjectAcl(bucketName, profilePhoto, CannedAccessControlList.PublicRead);
+            System.out.format("Object %s has been created.\n", profilePhoto);
+        } catch (AmazonS3Exception e) {
+            e.printStackTrace();
+        } catch(SdkClientException | IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("파일 업로드 완료.");
     }
 }

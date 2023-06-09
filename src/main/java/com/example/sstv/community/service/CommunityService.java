@@ -1,5 +1,6 @@
 package com.example.sstv.community.service;
 
+import com.example.sstv.common.Search;
 import com.example.sstv.community.Comments;
 import com.example.sstv.community.Community;
 import com.example.sstv.community.DAO.CommunityDAO;
@@ -65,5 +66,13 @@ public class CommunityService {
     public int getWritingCount(String hostUserId) {
         int count = communityDao.getWritingCount(hostUserId);
         return count;
+    }
+
+    public Map<String, Object> getSearchWriting(String searchKeyword) {
+        List<Search> list = (List<Search>) communityDao.getSearchWriting((searchKeyword));
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("list", list);
+
+        return map;
     }
 }

@@ -27,6 +27,7 @@
         <result property="totalStreamingAccumulatedTime"     column="total_streaming_accumulated_time"      jdbcType="NUMERIC" />
         <result property="stRoll"       column="st_roll" jdbcType="NUMERIC" />
         <result property="userType"     column="user_type"  jdbcType="NUMERIC" />
+        <result property="followCount" column="follow_count"      jdbcType="NUMERIC" />
     </resultMap>
     <resultMap id="coinHistorySelectMap" type="com.example.sstv.user.CoinHistroy">
         <result property="coin"             column="coin"               jdbcType="NUMERIC" />
@@ -162,6 +163,17 @@
         u.user_nickname, c.ticket_prod_no, c.prod_name, c.price, c.pay_date, u.coin
         FROM COIN_HISTORY c, USER u
         WHERE c.user_id = #{userId} AND c.user_id = u.user_id
+    </select>
+
+    <!-- 유저 검색 추가 -->
+    <select id="getSearchUser" parameterType="com.example.sstv.common.Search" resultMap="userSelectMap">
+        SELECT USER.*, COUNT(FAN.follow_user) AS follow_count
+        FROM USER
+        LEFT JOIN FAN ON USER.user_id = FAN.user_id
+        WHERE USER.user_id LIKE CONCAT('%', #{searchKeyword}, '%')
+        OR USER.user_nickname LIKE CONCAT('%', #{searchKeyword}, '%')
+        GROUP BY USER.user_id
+        ORDER BY follow_count DESC
     </select>
 
 </mapper>
