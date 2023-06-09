@@ -37,7 +37,7 @@
     </select>
     <!--결제하기 -->
     <insert id="addPurchase" parameterType="com.example.sstv.deal.Purchase">
-        INSERT INTO PURCHASE (user_id,  payment_amount, payment_date, payment_method)
-        VALUES (#{userId},  #{paymentAmount}, NOW(), #{paymentMethod})
+        INSERT INTO PURCHASE (user_id,  payment_amount, payment_date, payment_method, merchant_uid, imp_uid)
+        VALUES (#{userId},  #{paymentAmount}, NOW(), #{paymentMethod}, #{merchantUid}, #{impUid})
     </insert>
 </mapper>

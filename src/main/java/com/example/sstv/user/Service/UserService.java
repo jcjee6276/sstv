@@ -60,7 +60,7 @@ public class UserService {
         userDAO.updateUser(user);
     }
 
-    public void uploadFile(User user) {userDAO.uploadFile(user);}
+    //public void uploadFile(User user) {userDAO.uploadFile(user);}
     public boolean checkUserId(String userId) {
         boolean result=true;
         User user=userDAO.getUser(userId);

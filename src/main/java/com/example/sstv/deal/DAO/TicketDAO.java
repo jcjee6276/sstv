@@ -21,6 +21,6 @@ public interface TicketDAO {
 
 
     void useTicket(Ticket ticketNo);
-    void TkRecentCoin(Ticket ticket);
+    //void TkRecentCoin(Ticket ticket);
 
 }

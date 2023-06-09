@@ -46,8 +46,8 @@
 
     <insert id="addTicket" parameterType="com.example.sstv.deal.Ticket">
         INSERT
-        INTO TICKET(user_id, ticket_no, ticket_start, ticket_end,ticket_use,ticket_date,ticket_prod_no )
-        VALUES (#{userId},#{ticketNo}, #{ticketStart}, #{ticketEnd}, #{ticketUse}, NOW(),#{ticketProdNo})
+        INTO TICKET(user_id , ticket_use,ticket_date, ticket_prod_no )
+        VALUES (#{userId},  0, NOW(),#{ticketProdNo})
     </insert>
 
     <update id="useTicket" parameterType="com.example.sstv.deal.Ticket">
