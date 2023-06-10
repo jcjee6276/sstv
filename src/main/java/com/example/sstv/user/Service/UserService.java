@@ -59,9 +59,7 @@ public class UserService {
     public void findPasswd(User user) {
         userDAO.findPasswd(user);
     }
-    public List<User> getAdminUserlist(Search search) {
-        return userDAO.getAdminUserlist(search);
-    }
+    public List<User> searchUser(String keyword) { return userDAO.searchUser(keyword); }
     public void removeUserStart(String userId) {
         userDAO.removeUserStart(userId);
     }

@@ -187,6 +187,30 @@ public class userRestController {
         return data;
     }
 
+    @GetMapping (value="checkId/{phone}")
+    public Data checkId(@PathVariable String phone) throws Exception {
+        //전달되는 값 유효한 값으로 파싱.
+        String phoneNum = phone.replace("=","");
+        System.out.println("phone :: "+phoneNum);
+        String userId = "";
+
+        //입력받은 휴대폰 번호로 회원 유무 체크 & 회원 유형 체크
+        if (userService.findId(phoneNum) != null ) {
+            userId = userService.findId(phoneNum).getUserId();
+            if (userService.getUser(userId).getUserType() == 1) {
+                System.out.println("해당 회원은 sns회원");
+                userId = "snsUser";
+            }
+        } else {
+            userId = "";
+        }
+
+        System.out.println("userService.findId(phone) :: " +userId);
+
+        Data data = new Data("success", userId);
+        return data;
+    }
+
     @PostMapping (value="findPasswd")
     public Data findPasswd(@RequestBody User user){
         System.out.println("비밀번호 찾기");
@@ -197,18 +221,18 @@ public class userRestController {
         return data;
     }
 
-    @PostMapping (value="getAdminUserList")
-    public Data getAdminUserList(@RequestBody Search search ) {
-        System.out.println("전체 회원목록 조회");
-        System.out.println(search.getSearchKeyword());
-        System.out.println(search.getSearchCondition());
-        System.out.println("search ..?"+search);
-        System.out.println("searchCondition :: "+search.getSearchCondition());
-        System.out.println("searchKeyword ::"+search.getSearchKeyword());
-
-        Data data = new Data("success", userService.getAdminUserlist(search));
-        return data;
-    }
+//    @PostMapping (value="getAdminUserList")
+//    public Data getAdminUserList(@RequestBody Search search ) {
+//        System.out.println("전체 회원목록 조회");
+//        System.out.println(search.getSearchKeyword());
+//        System.out.println(search.getSearchCondition());
+//        System.out.println("search ..?"+search);
+//        System.out.println("searchCondition :: "+search.getSearchCondition());
+//        System.out.println("searchKeyword ::"+search.getSearchKeyword());
+//
+//        Data data = new Data("success", userService.getAdminUserlist(search));
+//        return data;
+//    }
 
     @PostMapping (value="sendSMS")
     public Data sendSMS(@RequestBody String phone, HttpSession session , HttpServletRequest request) throws NoSuchAlgorithmException, InvalidKeyException, JsonProcessingException {

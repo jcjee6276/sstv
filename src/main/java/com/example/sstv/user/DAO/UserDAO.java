@@ -20,7 +20,7 @@ public interface UserDAO {
     User getUserNickname(String userNickname);
     User findId(String phone);
     void findPasswd(User user);
-    List<User> getAdminUserlist(Search search);
+    List<User> searchUser(String keyword);
     void removeUserStart(String userId);
     void removeUserCancle(String userId);
     void updateUser(User user);
