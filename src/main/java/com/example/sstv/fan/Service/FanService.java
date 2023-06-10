@@ -26,8 +26,6 @@ public class FanService {
     //내가 팔로우한 회원 조회
     public List<String> getFollowList(String userId) {
         List<Fan> fanList = fanDAO.getFollow(userId);
-        System.out.println("service의 getFollow 값은 ..?"+fanDAO.getFollow(userId));
-        System.out.println("service의 fanList 값 check"+fanList);
         List<String> getFollowList = new ArrayList<>();
         for (Fan fan : fanList) {
             if (fan != null && fan.getFollowUser() != null) {
@@ -77,8 +75,10 @@ public class FanService {
     public void removeFollow(Fan fan){
         fanDAO.removeFollow(fan);
     }
+    public void removeFollower(Fan fan) { fanDAO.removeFollower(fan);}
     public void removeBlacklist(Fan fan){
         fanDAO.removeBlacklist(fan);
     }
+
 
 }

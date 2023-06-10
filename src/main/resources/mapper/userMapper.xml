@@ -67,8 +67,7 @@
         SELECT
         user_nickname
         FROM USER
-        WHERE user_nickname = #{value}
-        ORDER BY user_nickname ASC
+        WHERE user_id = #{value}
     </select>
 
     <!-- 아이디 찾기. -->
@@ -88,20 +87,12 @@
         WHERE user_id = #{userId}
     </update>
 
-    <!-- 관리자의 전체 회원 조회 -->
-    <select id="getAdminUserlist" parameterType="com.example.sstv.common.Search" resultMap="userSelectMap">
-        SELECT user_name, user_nickname, date_birth, sign_date
+    <!-- 회원 검색 -->
+    <select id="searchUser" parameterType="String" resultMap="userSelectMap">
+        SELECT
+        *
         FROM USER
-        <if test="searchCondition != null">
-            <where>
-                <if test="searchCondition == 0 and searchKeyword !='' ">
-                    user_name = #{searchKeyword}
-                </if>
-                <if test="searchCondition == 1 and searchKeyword !='' ">
-                    user_nickname = #{searchKeyword}
-                </if>
-            </where>
-        </if>
+        WHERE user_name LIKE CONCAT('%', #{value}, '%') OR user_nickname LIKE CONCAT('%', #{value}, '%')
     </select>
 
     <!-- 회원 탈퇴 절차 시작. -->
