@@ -16,6 +16,8 @@ public class Purchase {
     private int coin;
     private String impUid;
 
+    private String merchantUid;
+
     public String getImpUid() {
         return impUid;
     }
@@ -32,7 +34,7 @@ public class Purchase {
         this.merchantUid = merchantUid;
     }
 
-    private String merchantUid;
+
 
     @Override
     public String toString() {

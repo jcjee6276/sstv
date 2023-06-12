@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/ticketProduct/*")
+@RequestMapping("/product/*")
 public class TicketProductRestController {
 
 

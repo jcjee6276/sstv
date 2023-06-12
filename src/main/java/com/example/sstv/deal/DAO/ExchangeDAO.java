@@ -15,7 +15,7 @@ import java.util.List;
 @Mapper
 public interface ExchangeDAO {
 
-    void addExchange(LocalDateTime exchange);
+    void addExchange(Exchange exchange);
 
     List<Exchange> getExchangeList(String userId);
     List<Exchange> getExchangeRequestList(String userId);

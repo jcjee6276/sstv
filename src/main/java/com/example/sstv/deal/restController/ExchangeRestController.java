@@ -2,6 +2,7 @@ package com.example.sstv.deal.restController;
 
 import com.example.sstv.common.Data;
 import com.example.sstv.deal.Exchange;
+import com.example.sstv.deal.Purchase;
 import com.example.sstv.deal.Service.ExchangeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -35,19 +36,26 @@ public class ExchangeRestController {
         return data;
     }
 
-    @PostMapping(value = "addExchange")
-    public Data addExchange(@RequestBody Exchange exchange){
-
+    @PostMapping(value = "addExchange/{userId}")
+    public Data addExchange(@PathVariable String userId, @RequestBody Exchange exchange) {
         System.out.println("환전하기");
-        LocalDateTime currentDataTime  = LocalDateTime.now();
-        exchangeService.addExchange(currentDataTime);
+        exchange.setUserId(userId);
+        exchangeService.addExchange(exchange);
         Data data = new Data("success", "환전하기");
-        return  data;
+        return data;
     }
+
     @PostMapping (value ="exchangeAcc")
     public Data exchangeAcc(@RequestBody Exchange exchange) throws Exception {
         exchangeService.exchangeAcc(exchange);
-        Data data = new Data("success", "환전신청심사");
+        Exchange updatedExchange = exchangeService.getExchangeRequestList(exchange);
+        Data data = new Data("success", updatedExchange.getExchangeAcc());
+        return data;
+    }
+    @PostMapping(value = "saveExchangeHistory")
+    public Data saveExchangeHistory(@RequestBody Exchange exchange) {
+        exchangeService.addExchange(exchange);
+        Data data = new Data("success", "Payment history saved");
         return data;
     }
 }

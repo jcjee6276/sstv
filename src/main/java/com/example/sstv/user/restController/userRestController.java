@@ -142,7 +142,7 @@ public class userRestController {
     public Data updateUser(@RequestBody User user){
         System.out.println("updateUser..!"+user);
         userService.updateUser(user);
-
+        System.out.println(user);
         Data data = new Data("success", user);
         return data;
     }
@@ -324,7 +324,7 @@ public class userRestController {
         user.setProfilePhoto(profilePhoto);
 
         userService.updateUser(user);
-        userService.fileUpload(file, profilePhoto);
+        //userService.fileUpload(file, profilePhoto);
 
         Data data = new Data("success", "fileUpload 성공");
         return data;

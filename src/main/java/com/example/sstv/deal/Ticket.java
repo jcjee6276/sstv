@@ -17,7 +17,7 @@ public class Ticket {
     private int ticketProdNo;
     private String userId;
     private int coin;
-    private int ticketName;
+    private String ticketName;
 
     private int price;
 
@@ -55,11 +55,11 @@ public class Ticket {
         this.coin = coin;
     }
 
-    public int getTicketName() {
+    public String getTicketName() {
         return ticketName;
     }
 
-    public void setTicketName(int ticketName) {
+    public void setTicketName(String ticketName) {
         this.ticketName = ticketName;
     }
 
