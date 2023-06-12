@@ -35,9 +35,9 @@ public class TicketService {
     }
 
     public void useTicket(Ticket ticketNo)throws Exception{
+        System.out.println("useTicketService부분");
         ticketDAO.useTicket(ticketNo);
     }
-//    public void TkRecentCoin(Ticket ticket)throws  Exception{
-//        ticketDAO.TkRecentCoin(ticket);
-//    }
+
+
 }

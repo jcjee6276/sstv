@@ -18,12 +18,12 @@ public class PurchaseRestController {
         this.purchaseService = purchaseService;
     }
 
-    @RequestMapping("getPurchaseList/{userId}")
-    public Data getPurchaseList(@PathVariable("userId") String userId) {
+    @RequestMapping(value="getPurchaseList/{userId}")
+    public Data getPurchaseList(@PathVariable String userId) {
         // 결제 내역 리스트를 화면에 보여주는 용도 (결제넘버, 결제날짜,유저아이디, 결제금액, 결제수단, 코인)  
  
         List<Purchase> purchaseList = purchaseService.getPurchaseList(userId);
-
+        System.out.println("결제리스트");
         Data data = new Data("success", purchaseList);
         return data;
     }
