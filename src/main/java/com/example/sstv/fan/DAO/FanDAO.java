@@ -20,6 +20,7 @@ public interface FanDAO {
     List<Fan> getBlackList(String userId);
     List<Fan> getBlackListOwner(String blackUser);
     void removeFollow(Fan fan);
+    void removeFollower(Fan fan);
     void removeBlacklist(Fan fan);
 
 }

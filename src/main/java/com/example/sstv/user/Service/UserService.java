@@ -20,6 +20,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,6 +42,8 @@ import java.util.Map;
 @Service
 public class UserService {
     private UserDAO userDAO;
+    @Value("${redirectUrl}")
+    private String redirectUrl;
 
     @Autowired
     public UserService(UserDAO userDAO) {
@@ -59,9 +62,7 @@ public class UserService {
     public void findPasswd(User user) {
         userDAO.findPasswd(user);
     }
-    public List<User> getAdminUserlist(Search search) {
-        return userDAO.getAdminUserlist(search);
-    }
+    public List<User> searchUser(String keyword) { return userDAO.searchUser(keyword); }
     public void removeUserStart(String userId) {
         userDAO.removeUserStart(userId);
     }
@@ -96,21 +97,7 @@ public class UserService {
         return result;
     }
 
-//    public String getKakaoToken(String authorize_code) throws IOException {
-//        System.out.println("kakao token 받아보자.");
-//        String access_token = "";
-//        String refresh_token = "";
-//        String url = "https://kauth.kakao.com";
-//        URL apiurl;
-//        apiurl = new URL(url);
-//
-//        HttpURLConnection con = (HttpURLConnection) apiurl.openConnection();
-//        con.setRequestMethod("POST");
-//
-//        String requestRrl = "/oauth/authorize?client_id=" + "73b235263e9c55fb4e85a97648c1c0de" +
-//                "&redirect_uri=" + "http://192.168.0.21:8080/user/kakaoLogin" + "&response_type=code";
-//        System.out.println("requestRrl 확인 :: " + requestRrl);
-//
+
         public String getkakaoToken(String authorize_code) throws IOException {
             System.out.println("토큰 주세요..");
             String access_token = "";
@@ -163,11 +150,7 @@ public class UserService {
                 refresh_token = kakao_token.get("refresh_token").toString(); // refresh_token 추출
             }
 
-//        ObjectMapper mapper = new ObjectMapper();
-//        JsonNode jsonNode = mapper.readTree(access_token);
-//        JsonNode jsonNode1 = mapper.readTree(refresh_token);
-//        access_token = jsonNode.get("access_token").asText();
-//        refresh_token = jsonNode1.get("refresh_token").asText();
+
             System.out.println("access_token 발급 완료 :: "+access_token);
             System.out.println("refresh_token 발급 완료 :: "+refresh_token);
         return access_token;
@@ -218,7 +201,7 @@ public class UserService {
             System.out.println(profilePhoto);
             System.out.println(name);
 
-            kakaoUserInfo.put("id",id);
+            kakaoUserInfo.put("userId",id);
             kakaoUserInfo.put("email",email);
             kakaoUserInfo.put("profilePhoto",profilePhoto);
             kakaoUserInfo.put("name",name);
@@ -248,7 +231,7 @@ public class UserService {
         System.out.println("토큰 주세요..");
         String access_Token = "";
         String refresh_Token = "";
-        String url = "https://kauth.kakao.com/oauth/token";
+        String url = "https://nid.naver.com/oauth2.0/token";
 
         URL apiurl;
         apiurl = new URL(url);
@@ -262,9 +245,10 @@ public class UserService {
 
         // HTTP 요청에 필요한 파라미터 설정
         String postParams = "grant_type=authorization_code" +
-                "&client_id=" + "73b235263e9c55fb4e85a97648c1c0de" +
-                "&redirect_uri=" + "http://192.168.0.21:8080/user/kakaoLogin" +
-                "&code=" + authorize_code;
+                "&client_id=" + "oxyovmQ_xk_uAaUdHUKu" +
+                "&redirect_uri=" + redirectUrl +
+                "&code=" + authorize_code +
+                "&client_secret=" + "uFi6q1_u5O";
         con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
 
         System.out.println("전달 파라미터 확인.. :: "+postParams);
@@ -350,7 +334,7 @@ public class UserService {
             userInfo.put("mobile", mobile);
             userInfo.put("name", name);
             userInfo.put("email", email);
-            userInfo.put("id", id);
+            userInfo.put("userId", id);
             userInfo.put("birthData", birthDate);
 
             //해당 아이디가 없을 경우
@@ -526,25 +510,7 @@ public class UserService {
 
         String bucketName = "sstv-image";
 
-// create folder
-//        String folderName = "Profile/";
-//
-//        ObjectMetadata objectMetadata = new ObjectMetadata();
-//        objectMetadata.setContentLength(0L);
-//        objectMetadata.setContentType("application/x-directory");
-//        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, folderName, new ByteArrayInputStream(new byte[0]), objectMetadata);
-//
-//        try {
-//            s3.putObject(putObjectRequest);
-//            System.out.format("Folder %s has been created.\n", folderName);
-//        } catch (AmazonS3Exception e) {
-//            e.printStackTrace();
-//        } catch(SdkClientException e) {
-//            e.printStackTrace();
-//        }
-
 // upload local file
-//        String objectName = "sample-object";
         String filePath = "192.168.0.21:8080/user/uploadFile/"+profilePhoto;
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(file.getSize());

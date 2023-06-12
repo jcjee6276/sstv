@@ -61,12 +61,17 @@
 
     <!-- 팔로우 취소 -->
     <delete id="removeFollow" parameterType="com.example.sstv.fan.Fan">
-        DELETE FORM FAN WHERE user_id = #{userId} AND follow_user = #{followUser}
+        DELETE FROM FAN WHERE user_id = #{userId} AND follow_user = #{followUser}
+    </delete>
+
+    <!-- 팔로워 목록에서 삭제 -->
+    <delete id="removeFollower" parameterType="com.example.sstv.fan.Fan">
+        DELETE FROM FAN WHERE user_id = #{followUser} AND follow_user = #{userId}
     </delete>
 
     <!-- 블랙리스트 취소 -->
     <delete id="removeBlacklist" parameterType="com.example.sstv.fan.Fan">
-        DELETE FORM FAN WHERE user_id = #{userId} AND black_user = #{blackUser}
+        DELETE FROM FAN WHERE user_id = #{userId} AND black_user = #{blackUser}
     </delete>
 
     <!-- 회원 검색 -->
