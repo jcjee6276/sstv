@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,6 +32,8 @@ public class userRestController {
     private UserService userService;
     @Autowired
     private FanService fanService;
+    @Value("${redirectUrl}")
+    private String redirectUrl;
 
     @Autowired
     public userRestController(UserService userService) {
@@ -43,20 +46,20 @@ public class userRestController {
         return data;
     }
 
-    @GetMapping(value="addSNSUser")
-    public Data addSNSUser(@RequestParam(value = "code", required = false) String code, HttpSession session, HttpServletRequest request) throws Exception {
+    @GetMapping(value="naverLogin")
+    public Data naverLogin(@RequestParam(value = "code", required = false) String code, HttpSession session, HttpServletResponse response) throws Exception {
         String access_Token ="";
         access_Token = userService.getAccessToken(code);
         System.out.println("token 발급 완료! :: " +access_Token);
 
         //회원 정보 받아오기(from 네이버)
         Map<String, Object> userInfo = userService.getUserInfo(access_Token);
-        System.out.println("userInfo..! 넌 내꺼얌! :: "+userInfo);
-        String snsUserId = (String)userInfo.get("id");
+        System.out.println("userInfo..! :: "+userInfo);
+        String snsUserId = (String)userInfo.get("userId");
         System.out.println(snsUserId);
 
-        session.setAttribute("user", snsUserId);
-        session = request.getSession();
+        session.setAttribute("snsUser", snsUserId);
+        response.sendRedirect(redirectUrl);
 
         Data data = new Data("success", snsUserId);
         return data;
@@ -86,10 +89,9 @@ public class userRestController {
             //회원 정보&블랙리스트 세션에 저장
             System.out.println("아이디 패스워드 일치");
             session.setAttribute("user", info);
-//            Cookie cookie = nodeCookie.getNodeCookie(info);
-//            response.addCookie(cookie);
+
         }
-//        List<String> blackList = fanService.getBlackList(info.getUserId()).getBlackUser();
+
         //로그인되며, 회원탈퇴 절차 취소
         userService.removeUserCancle(info.getUserId());
 
@@ -100,11 +102,19 @@ public class userRestController {
     @GetMapping(value="login")
     public Data loginSessionCheck(HttpSession session){
         User user = (User)session.getAttribute("user");
-        System.out.println("로그인 중인 유저 아이디 :: "+user);
+        String userId = (String)session.getAttribute("snsUser");
+        Data data = null;
         if(user == null){
-            return null;
+            System.out.println("sns회원 :: "+userId);
+            data = new Data("snsUser",userId);
         }
-        Data data = new Data("success",user);
+        if(userId == null){
+            System.out.println("일반 회원 :: "+user);
+            data = new Data("user", user);
+        }
+        if(user == null && userId == null){
+            data = null;
+        }
         return data;
     }
 
@@ -221,19 +231,6 @@ public class userRestController {
         return data;
     }
 
-//    @PostMapping (value="getAdminUserList")
-//    public Data getAdminUserList(@RequestBody Search search ) {
-//        System.out.println("전체 회원목록 조회");
-//        System.out.println(search.getSearchKeyword());
-//        System.out.println(search.getSearchCondition());
-//        System.out.println("search ..?"+search);
-//        System.out.println("searchCondition :: "+search.getSearchCondition());
-//        System.out.println("searchKeyword ::"+search.getSearchKeyword());
-//
-//        Data data = new Data("success", userService.getAdminUserlist(search));
-//        return data;
-//    }
-
     @PostMapping (value="sendSMS")
     public Data sendSMS(@RequestBody String phone, HttpSession session , HttpServletRequest request) throws NoSuchAlgorithmException, InvalidKeyException, JsonProcessingException {
         //json 형식으로 받아온 data 처리
@@ -297,16 +294,17 @@ public class userRestController {
     }
 
     @GetMapping (value="kakaoLogin")
-    public Data kakaoLogin(@RequestParam(value = "code", required = false) String code,HttpSession session) throws Exception {
+    public Data kakaoLogin(@RequestParam(value = "code", required = false) String code,HttpSession session, HttpServletResponse response) throws Exception {
         System.out.println(code);
         //발급 받아온 접근 token
         String access_token = userService.getkakaoToken(code);
         System.out.println("access_token :: "+access_token);
         Map<String, Object> kakaoUserInfo = userService.getKakaoInfo(access_token);
-        String snsUserId = (String)kakaoUserInfo.get("id");
+        String snsUserId = (String)kakaoUserInfo.get("userId");
         System.out.println(snsUserId);
 
-        session.setAttribute("user", snsUserId);
+        session.setAttribute("snsUser", snsUserId);
+        response.sendRedirect(redirectUrl);
 
         Data data = new Data("success",kakaoUserInfo);
         return data;

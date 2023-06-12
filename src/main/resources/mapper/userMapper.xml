@@ -44,14 +44,14 @@
     <insert 	id="addUser"		parameterType="com.example.sstv.user.User" >
         INSERT
         INTO USER( user_id , passwd, profile_photo, user_nickname, user_name, date_birth, email, phone, sign_date, withdrawal, roll, coin, accumulated_viewers, total_streaming_accumulated_time, st_roll, user_type)
-        VALUES	 (	#{userId} , #{password} , #{profilePhoto} , #{userNickname} , #{userName} , #{dateBirth} , #{eMail} , #{phone} , NOW() , 0 , 'user' , 0 , 0 , 0 , 0 , 0)
+        VALUES	 (	#{userId} , #{password} , 'base_image' , #{userNickname} , #{userName} , #{dateBirth} , #{eMail} , #{phone} , NOW() , 0 , 'user' , 0 , 0 , 0 , 0 , 0)
     </insert>
 
     <!-- 회원 가입. -->
     <insert 	id="addSNSUser"		parameterType="com.example.sstv.user.User" >
         INSERT
         INTO USER( user_id , passwd, profile_photo, user_nickname, user_name, date_birth, email, phone, sign_date, withdrawal, roll, coin, accumulated_viewers, total_streaming_accumulated_time, st_roll, user_type)
-        VALUES	 (	#{userId} , #{userId} , #{profilePhoto} , #{userNickname} , #{userName} , #{dateBirth} , #{eMail} , #{phone} , NOW() , 0 , 'user' , 0 , 0 , 0 , 0 , 1)
+        VALUES	 (	#{userId} , #{userId} , 'base_image' , #{userNickname} , #{userName} , #{dateBirth} , #{eMail} , #{phone} , NOW() , 0 , 'user' , 0 , 0 , 0 , 0 , 1)
     </insert>
 
     <!-- 회원 정보 조회. -->
