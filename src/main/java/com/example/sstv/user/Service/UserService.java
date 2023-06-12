@@ -385,7 +385,7 @@ public class UserService {
         JsonArray toArr = new JsonArray();
 
         // 난수와 함께 전송
-        toJson.addProperty("content",rand);
+        toJson.addProperty("content","[SSTV] 인증번호["+rand+"]를 입력해주세요.");
         toJson.addProperty("to",phone);
         toArr.add(toJson);
 
