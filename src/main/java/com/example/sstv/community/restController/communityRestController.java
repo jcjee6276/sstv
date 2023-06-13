@@ -70,6 +70,9 @@ public class communityRestController {
         Data data = new Data("success","");
         return data;
     }
+
+
+
     @GetMapping(value="addNotice/{writingNo}")
     public Data addNotice(@PathVariable int writingNo){
         communityService.addNotice(writingNo);
