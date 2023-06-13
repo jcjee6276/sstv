@@ -30,4 +30,10 @@ public interface CommunityDAO {
     int getWritingCount(String hostUserId);
 
     List<Search> getSearchWriting(String searchKeyword);
+
+    void addView(int writingNo);
+
+    void addNotice(int writingNo);
+
+    Community getNotice(String hostUserId);
 }
