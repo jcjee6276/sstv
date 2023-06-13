@@ -19,15 +19,15 @@ public class TicketService {
         ticketDAO.addTicket(ticket);
 
         // 사용자 계정에서 코인 차감
-        int price = ticket.getPrice();
-        int coin = ticket.getCoin();
-        if (coin >= price) {
-            int remainingCoin = coin - price;
-            ticket.setCoin(remainingCoin);
-            ticketDAO.TkRecentCoin(ticket);
-        } else {
-            throw new Exception("티켓을 구매하기에 충분한 코인이 없습니다.");
-        }
+//        int price = ticket.getPrice();
+//        int coin = ticket.getCoin();
+//        if (coin >= price) {
+//            int remainingCoin = coin - price;
+//            ticket.setCoin(remainingCoin);
+//            ticketDAO.TkRecentCoin(ticket);
+//        } else {
+//            throw new Exception("티켓을 구매하기에 충분한 코인이 없습니다.");
+//        }
     }
 
     public List<Ticket> getTicketList(String userId){
@@ -35,9 +35,9 @@ public class TicketService {
     }
 
     public void useTicket(Ticket ticketNo)throws Exception{
+        System.out.println("useTicketService부분");
         ticketDAO.useTicket(ticketNo);
     }
-    public void TkRecentCoin(Ticket ticket)throws  Exception{
-        ticketDAO.TkRecentCoin(ticket);
-    }
+
+
 }

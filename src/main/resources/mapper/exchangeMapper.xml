@@ -25,8 +25,8 @@
     </resultMap>
     <!-- 환전하기-->
     <insert id="addExchange" parameterType="com.example.sstv.deal.Exchange">
-        INSERT INTO EXCHANGE(user_id,exchange_date, exchange_bank,exchange_account,exchange_amount,exchangeAcc )
-        VALUES (#{userId},sysdate,#{exchangeBank},#{exchangeAccount},#{exchangeAmount},#{exchangeAcc})
+        INSERT INTO EXCHANGE(user_id,exchange_date, exchange_bank,exchange_account,exchange_amount,exchange_acc )
+        VALUES (#{userId},NOW(),#{exchangeBank},#{exchangeAccount},#{exchangeAmount},#{exchangeAcc})
     </insert>
     <!-- 환전목록-->
     <select id="getExchangeList" parameterType="String" resultMap="exchangeSelectMap">

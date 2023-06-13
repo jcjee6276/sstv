@@ -10,5 +10,5 @@ public interface PurchaseDAO {
     List<Purchase> getPurchaseList(String userId);
     void addPurchase(Purchase purchase);
 
-//    void addCoin(String userId);
+
 }

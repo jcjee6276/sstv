@@ -22,7 +22,7 @@ public class ExchangeService {
     public List<Exchange> getExchangeRequestList(String userId){
         return exchangeDAO.getExchangeRequestList(userId);
     }
-    public void addExchange(LocalDateTime exchange) {
+    public void addExchange(Exchange exchange) {
         exchangeDAO.addExchange(exchange);
     }
 

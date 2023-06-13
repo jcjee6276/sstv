@@ -10,7 +10,7 @@
 
     <resultMap id="TicketProductSelectMap" type="com.example.sstv.deal.TicketProduct">
         <result property="ticketProdNo" 	column="ticket_prod_no" 			jdbcType="NUMERIC" />
-        <result property="ticketName" 		column="ticket_name" 			jdbcType="VARCHAR" />
+        <result property="ticketName" 		column="ticket_name" 			jdbcType="NUMERIC" />
         <result property="price"     column="price"      jdbcType="NUMERIC" />
     </resultMap>
 
