@@ -117,7 +117,7 @@ public class UserService {
             // HTTP 요청에 필요한 파라미터 설정
             String postParams = "grant_type=authorization_code" +
                     "&client_id=" + "73b235263e9c55fb4e85a97648c1c0de" +
-                    "&redirect_uri=" + "http://192.168.0.21:8080/user/kakaoLogin" +
+                    "&redirect_uri=" + "http://223.130.135.131:8080/user/kakaoLogin" +
                     "&code=" + authorize_code;
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
 
