@@ -76,8 +76,7 @@ public class userRestController {
     @PostMapping(value="login")
     public Data login(@RequestBody User user , HttpSession session, HttpServletResponse response){
         System.out.println("여기는 ! Login RestController");
-
-        NodeCookie nodeCookie = new NodeCookie();
+        Data data = null;
 
         //DB에 저장된 user정보 info로 가져오고 blackList 정보 추가
         User info = userService.getUser(user.getUserId());
@@ -85,17 +84,19 @@ public class userRestController {
         System.out.println(info.getUserId());
         System.out.println("blackList CHECK :: " +fanService.getBlackList(info.getUserId()));
 
+        //아이디 패스워드 일치 불일치 여부에 따라 다른 결과 리턴..
         if(user.getPassword().equals(info.getPassword())){
             //회원 정보&블랙리스트 세션에 저장
             System.out.println("아이디 패스워드 일치");
             session.setAttribute("user", info);
-
+            //로그인되며, 회원탈퇴 절차 취소
+            userService.removeUserCancle(info.getUserId());
+            data = new Data("success", info);
+        }else{
+            System.out.println("아이디 패스워드 불일치");
+            data = new Data("fail","");
         }
 
-        //로그인되며, 회원탈퇴 절차 취소
-        userService.removeUserCancle(info.getUserId());
-
-        Data data = new Data("success", info);
         return data;
     }
 
@@ -314,7 +315,7 @@ public class userRestController {
     public Data uploadFile(@RequestParam("file") MultipartFile file , @RequestParam String userId) throws IOException{
         String originalFilename = file.getOriginalFilename();
         String filename = originalFilename.substring(originalFilename.lastIndexOf("."));
-        String profilePhoto = UUID.randomUUID().toString() + filename;
+        String profilePhoto = userId + filename;
         
         System.out.println("저장될 파일 명 :: "+profilePhoto);
         
