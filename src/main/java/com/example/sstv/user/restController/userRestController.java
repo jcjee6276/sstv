@@ -57,11 +57,15 @@ public class userRestController {
         System.out.println("userInfo..! :: "+userInfo);
         String snsUserId = (String)userInfo.get("userId");
         System.out.println(snsUserId);
+        //snsUserId로 회원 전체정보 가져오고 blackList 추가
+        User info = userService.getUser(snsUserId);
+        info.setBlackList((fanService.getBlackList(snsUserId)));
 
-        session.setAttribute("snsUser", snsUserId);
+        //세션에 유저정보 저장 후, 메인화면으로 redirect.
+        session.setAttribute("user", info);
         response.sendRedirect(redirectUrl);
 
-        Data data = new Data("success", snsUserId);
+        Data data = new Data("success", info);
         return data;
     }
 
@@ -103,19 +107,20 @@ public class userRestController {
     @GetMapping(value="login")
     public Data loginSessionCheck(HttpSession session){
         User user = (User)session.getAttribute("user");
-        String userId = (String)session.getAttribute("snsUser");
-        Data data = null;
-        if(user == null){
-            System.out.println("sns회원 :: "+userId);
-            data = new Data("snsUser",userId);
-        }
-        if(userId == null){
-            System.out.println("일반 회원 :: "+user);
-            data = new Data("user", user);
-        }
-        if(user == null && userId == null){
-            data = null;
-        }
+//        String userId = (String)session.getAttribute("snsUser");
+//        Data data = null;
+//        if(user == null){
+//            System.out.println("sns회원 :: "+userId);
+//            data = new Data("snsUser",userId);
+//        }
+//        if(userId == null){
+//            System.out.println("일반 회원 :: "+user);
+//            data = new Data("user", user);
+//        }
+//        if(user == null && userId == null){
+//            data = null;
+//        }
+        Data data = new Data ("success",user);
         return data;
     }
 
@@ -303,11 +308,13 @@ public class userRestController {
         Map<String, Object> kakaoUserInfo = userService.getKakaoInfo(access_token);
         String snsUserId = (String)kakaoUserInfo.get("userId");
         System.out.println(snsUserId);
+        User info = userService.getUser(snsUserId);
+        info.setBlackList(fanService.getBlackList(snsUserId));
 
-        session.setAttribute("snsUser", snsUserId);
+        session.setAttribute("user", info);
         response.sendRedirect(redirectUrl);
 
-        Data data = new Data("success",kakaoUserInfo);
+        Data data = new Data("success",info);
         return data;
     }
 
@@ -325,7 +332,7 @@ public class userRestController {
         user.setProfilePhoto(profilePhoto);
 
         userService.updateUser(user);
-        //userService.fileUpload(file, profilePhoto);
+        userService.fileUpload(file, profilePhoto);
 
         Data data = new Data("success", "fileUpload 성공");
         return data;
