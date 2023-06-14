@@ -120,6 +120,7 @@ public class userRestController {
 //        if(user == null && userId == null){
 //            data = null;
 //        }
+        System.out.println("세션 유지중인 유저 :: "+user);
         Data data = new Data ("success",user);
         return data;
     }
