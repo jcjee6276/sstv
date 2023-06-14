@@ -10,6 +10,7 @@ import com.amazonaws.services.s3.model.*;
 import com.example.sstv.common.Data;
 import com.example.sstv.community.Comments;
 import com.example.sstv.community.Community;
+import com.example.sstv.community.Streaming;
 import com.example.sstv.community.service.CommunityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -214,13 +215,34 @@ public class communityRestController {
         return data;
     }
 
-    @GetMapping(value="testupload")
-    public Data testupload(@PathVariable String recordUrl) {
+    @PostMapping(value="finishStreaming")
+    public Data finishStreaming(@RequestBody Streaming streaming) {
 
         final String endPoint = "https://kr.object.ncloudstorage.com";
         final String regionName = "kr-standard";
         final String accessKey = "z4Xcnb9Fi7MmuSeksVf4";
         final String secretKey = "nt9eOEVgBxjdmjqOgP9Xee44ADNmEDT171bekE2u";
+
+        Streaming stream = communityService.finishStreaming(streaming.getStreamingNo());
+        String getUrl = stream.getRecordUrl().replace(".mp4","");
+        System.out.println("st?"+getUrl);
+
+        String ffmpegPath = "/Users/jeonjichang/Downloads/ffmpeg";
+        String fileName = getUrl+".jpg";
+        String inputFilePath = "https://kr.object.ncloudstorage.com/hls/livestation/"+stream.getRecordUrl();
+        String outputFilePath = "/image/"+fileName;
+        int timeInSeconds = 10;
+
+
+
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder(ffmpegPath, "-ss", String.valueOf(timeInSeconds), "-i", inputFilePath, "-vframes", "1", "-q:v", "2", outputFilePath);
+            Process process = processBuilder.start();
+            process.waitFor();
+            System.out.println("썸네일 생성이 완료되었습니다.");
+        } catch (IOException | InterruptedException e){
+            e.printStackTrace();
+        }
 
 // S3 client
         final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
@@ -247,8 +269,8 @@ public class communityRestController {
         }
 
 // upload local file
-        String objectName = folderName+"176032-739207-202306082029.jpg";
-        String filePath = "/Users/jeonjichang/sstv/src/main/resources/media/176032-739207-202306082029.jpg";
+        String objectName = folderName+getUrl+".jpg";
+        String filePath = "/image/"+fileName;
 
         try {
             s3.putObject(bucketName, objectName, new File(filePath));
@@ -272,29 +294,7 @@ public class communityRestController {
         final String accessKey = "z4Xcnb9Fi7MmuSeksVf4";
         final String secretKey = "nt9eOEVgBxjdmjqOgP9Xee44ADNmEDT171bekE2u";
 
-        String ffmpegPath = "/Users/jeonjichang/Downloads/ffmpeg";
-        String fileName = "176032-739207-202306082029.jpg";
-        String inputFilePath = "https://kr.object.ncloudstorage.com/hls/livestation/176032-739207-202306082029.mp4";
-        String outputFilePath = "/Users/jeonjichang/sstv/src/main/resources/media/"+fileName;
-        int timeInSeconds = 10;
 
-        String bucketName = "https://kr.object.ncloudstorage.com/hls/livestation/thumbnails";
-
-        final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
-                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
-                .build();
-
-
-
-        try {
-            ProcessBuilder processBuilder = new ProcessBuilder(ffmpegPath, "-ss", String.valueOf(timeInSeconds), "-i", inputFilePath, "-vframes", "1", "-q:v", "2", outputFilePath);
-            Process process = processBuilder.start();
-            process.waitFor();
-            System.out.println("썸네일 생성이 완료되었습니다.");
-        } catch (IOException | InterruptedException e){
-            e.printStackTrace();
-        }
 
         Data data = new Data("success", "");
         return data;

@@ -4,6 +4,7 @@ import com.example.sstv.common.Search;
 import com.example.sstv.community.Comments;
 import com.example.sstv.community.Community;
 import com.example.sstv.community.DAO.CommunityDAO;
+import com.example.sstv.community.Streaming;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -86,5 +87,9 @@ public class CommunityService {
 
     public Community getNotice(String hostUserId){
         return communityDao.getNotice(hostUserId);
+    }
+
+    public Streaming finishStreaming(int streamingNo){
+        return communityDao.finishStreaming(streamingNo);
     }
 }

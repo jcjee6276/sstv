@@ -44,8 +44,22 @@
 
     </resultMap>
 
+    <resultMap id="streamingSelectMap" type="com.example.sstv.community.Streaming">
+        <result property="streamingNo" 		column="streaming_no" 			jdbcType="NUMERIC" />
+        <result property="userId" 		column="user_id" 			jdbcType="VARCHAR" />
+        <result property="streamingCategory" 		column="streaming_category" 			jdbcType="NUMERIC" />
+        <result property="streamingTitle" 		column="streaming_title" 			jdbcType="NUMERIC" />
+        <result property="recordUrl" 		column="record_url" 			jdbcType="VARCHAR" />
+        <result property="streamingStartTime" 		column="streaming_start_time" 			jdbcType="TIMESTAMP" />
+        <result property="streamingEndTime" 		column="reg_date" 			jdbcType="TIMESTAMP" />
 
+    </resultMap>
 
+    <select 	id="finishStreaming"	parameterType="com.example.sstv.community.Streaming"	resultMap="streamingSelectMap">
+        select *
+        FROM STREAMING
+        WHERE STREAMING_NO = #{streamingNo}
+    </select>
 
 
     <select 	id="getWriting"	parameterType="com.example.sstv.community.Community"	resultMap="communitySelectMap">
