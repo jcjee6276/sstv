@@ -75,4 +75,16 @@ public class CommunityService {
 
         return map;
     }
+
+    public void addView(int writingNo){
+        communityDao.addView(writingNo);
+    }
+
+    public void addNotice(int writingNo){
+        communityDao.addNotice((writingNo));
+    }
+
+    public Community getNotice(String hostUserId){
+        return communityDao.getNotice(hostUserId);
+    }
 }

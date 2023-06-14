@@ -4,6 +4,52 @@ import java.util.Date;
 import java.util.List;
 
 public class Community {
+    private Date notice;
+    private int view;
+
+    public Date getNotice() {
+        return notice;
+    }
+
+    public void setNotice(Date notice) {
+        this.notice = notice;
+    }
+
+    public int getView() {
+        return view;
+    }
+
+    @Override
+    public String toString() {
+        return "Community{" +
+                "notice=" + notice +
+                ", view=" + view +
+                ", up=" + up +
+                ", writingNo=" + writingNo +
+                ", commentCount=" + commentCount +
+                ", hostUserId='" + hostUserId + '\'' +
+                ", comment=" + comment +
+                ", comments=" + comments +
+                ", guestUserId='" + guestUserId + '\'' +
+                ", title='" + title + '\'' +
+                ", regDate=" + regDate +
+                ", content='" + content + '\'' +
+                '}';
+    }
+
+    public void setView(int view) {
+        this.view = view;
+    }
+
+    public int getUp() {
+        return up;
+    }
+
+    public void setUp(int up) {
+        this.up = up;
+    }
+
+    private int up;
     private int writingNo;
 
     public int getCommentCount() {
@@ -87,21 +133,6 @@ public class Community {
 
     public String getContent() {
         return content;
-    }
-
-    @Override
-    public String toString() {
-        return "Community{" +
-                "writingNo=" + writingNo +
-                ", commentCount=" + commentCount +
-                ", hostUserId='" + hostUserId + '\'' +
-                ", comment=" + comment +
-                ", comments=" + comments +
-                ", guestUserId='" + guestUserId + '\'' +
-                ", title='" + title + '\'' +
-                ", regDate=" + regDate +
-                ", content='" + content + '\'' +
-                '}';
     }
 
     public void setContent(String content) {
