@@ -3,6 +3,7 @@ package com.example.sstv.community.DAO;
 import com.example.sstv.common.Search;
 import com.example.sstv.community.Comments;
 import com.example.sstv.community.Community;
+import com.example.sstv.community.Streaming;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -36,4 +37,6 @@ public interface CommunityDAO {
     void addNotice(int writingNo);
 
     Community getNotice(String hostUserId);
+
+    Streaming finishStreaming(int StreamingNo);
 }
