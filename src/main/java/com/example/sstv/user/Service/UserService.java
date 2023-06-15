@@ -345,7 +345,6 @@ public class UserService {
                 user.seteMail(email);
                 user.setUserName(name);
                 user.setDateBirth(birthDate);
-                user.setPhone(mobile);
 
                 userDAO.addSNSUser(user);
 
