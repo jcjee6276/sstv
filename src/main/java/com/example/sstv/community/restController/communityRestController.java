@@ -227,7 +227,7 @@ public class communityRestController {
         String getUrl = stream.getRecordUrl().replace(".mp4","");
         System.out.println("st?"+getUrl);
 
-        String ffmpegPath = "/Users/jeonjichang/Downloads/ffmpeg";
+        String ffmpegPath = "/usr/bin/ffmpeg";
         String fileName = getUrl+".jpg";
         String inputFilePath = "https://kr.object.ncloudstorage.com/hls/livestation/"+stream.getRecordUrl();
         String outputFilePath = "/image/"+fileName;
