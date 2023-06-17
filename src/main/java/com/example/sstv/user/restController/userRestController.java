@@ -65,7 +65,8 @@ public class userRestController {
 
         //세션에 유저정보 저장 후, 메인화면으로 redirect.
         session.setAttribute("snsUser", info);
-        response.sendRedirect(redirectUrl);
+        String encodedRedirectUrl = response.encodeRedirectURL(redirectUrl);
+        response.sendRedirect(encodedRedirectUrl);
 
         User user = (User)session.getAttribute("snsUser");
 
@@ -342,7 +343,8 @@ public class userRestController {
         System.out.println("세션에 저잘될 정보는 :: "+info);
 
         session.setAttribute("snsUser", info);
-        response.sendRedirect(redirectUrl);
+        String encodedRedirectUrl = response.encodeRedirectURL(redirectUrl);
+        response.sendRedirect(encodedRedirectUrl);
 
         Data data = new Data("success",info);
         return data;
