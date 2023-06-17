@@ -66,9 +66,15 @@ public class userRestController {
 
         //세션에 유저정보 저장 후, 메인화면으로 redirect.
         session.setAttribute("snsUser", info);
+
+        // 세션 아이디 가져오기
+        String currentSessionId = session.getId();
 //        response.sendRedirect(redirectUrl);
+        // 리다이렉션 URL에 세션 아이디를 파라미터로 추가
+        String redirectUrlWithSessionId = redirectUrl + "?sessionId=" + currentSessionId;
+
         // URL 재작성을 수행하여 컨텍스트 경로를 포함한 절대 경로로 리다이렉션
-        String redirectUrlWithContext = request.getContextPath() + redirectUrl;
+        String redirectUrlWithContext = request.getContextPath() + redirectUrlWithSessionId;
         response.sendRedirect(redirectUrlWithContext);
 
         User user = (User)session.getAttribute("snsUser");
@@ -106,6 +112,7 @@ public class userRestController {
             session.setAttribute("user", info);
             //로그인되며, 회원탈퇴 절차 취소
             userService.removeUserCancle(info.getUserId());
+            printSessionAttributes(session);
             data = new Data("success", info);
         }else{
             System.out.println("아이디 패스워드 불일치");
@@ -126,19 +133,31 @@ public class userRestController {
         }
     }
 
-    @GetMapping(value="login")
-    public Data loginSessionCheck(HttpSession session){
+    @GetMapping(value = "login")
+    public Data loginSessionCheck(HttpSession session, @RequestParam(value = "sessionId", required = false) String sessionId, HttpServletRequest request) {
+        // 세션 아이디가 전달되었을 경우, 해당 세션 아이디로 세션을 복원
+        if (sessionId != null) {
+            session = request.getSession(false);
+            if (session != null && sessionId.equals(session.getId())) {
+                // 세션 복원 성공
+                System.out.println("세션 복원 성공: " + sessionId);
+            } else {
+                // 세션 복원 실패
+                System.out.println("세션 복원 실패: " + sessionId);
+            }
+        }
+
         printSessionAttributes(session);
         Data data = null;
-            if(session.getAttribute("user") != null) {
-                User user = (User) session.getAttribute("user");
-                System.out.println("세션 유지중인 유저 :: " + user);
-                data = new Data("success", user);
-            }else{
-                User snsUser = (User) session.getAttribute("snsUser");
-                System.out.println("sns 회원 세션 : "+snsUser);
-                data = new Data("success",snsUser);
-            }
+        if (session.getAttribute("user") != null) {
+            User user = (User) session.getAttribute("user");
+            System.out.println("세션 유지중인 유저 :: " + user);
+            data = new Data("success", user);
+        } else {
+            User snsUser = (User) session.getAttribute("snsUser");
+            System.out.println("sns 회원 세션 : " + snsUser);
+            data = new Data("success", snsUser);
+        }
 
         return data;
     }
@@ -339,10 +358,15 @@ public class userRestController {
         User info = userService.getUser(snsUserId);
         info.setBlackList(fanService.getBlackList(snsUserId));
 
-        System.out.println("세션에 저잘될 정보는 :: "+info);
+        System.out.println("세션에 저장될 정보는 :: "+info);
 
         session.setAttribute("snsUser", info);
 //        response.sendRedirect(redirectUrl);
+
+        String currentSessionId = session.getId();
+        // 리다이렉션 URL에 세션 아이디를 파라미터로 추가
+        String redirectUrlWithSessionId = redirectUrl + "?sessionId=" + currentSessionId;
+
         // URL 재작성을 수행하여 컨텍스트 경로를 포함한 절대 경로로 리다이렉션
         String redirectUrlWithContext = request.getContextPath() + redirectUrl;
         response.sendRedirect(redirectUrlWithContext);
