@@ -67,7 +67,7 @@
         SELECT
         user_nickname
         FROM USER
-        WHERE user_id = #{value}
+        WHERE user_nickname = #{value}
     </select>
 
     <!-- 아이디 찾기. -->
