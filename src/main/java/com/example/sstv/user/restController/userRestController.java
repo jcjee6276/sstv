@@ -61,8 +61,10 @@ public class userRestController {
         User info = userService.getUser(snsUserId);
         info.setBlackList((fanService.getBlackList(snsUserId)));
 
+        System.out.println("세션에 저장될 정보는 :: "+info);
+
         //세션에 유저정보 저장 후, 메인화면으로 redirect.
-        session.setAttribute("user", info);
+        session.setAttribute("snsUser", info);
         response.sendRedirect(redirectUrl);
 
         Data data = new Data("success", info);
@@ -107,19 +109,6 @@ public class userRestController {
     @GetMapping(value="login")
     public Data loginSessionCheck(HttpSession session){
         User user = (User)session.getAttribute("user");
-//        String userId = (String)session.getAttribute("snsUser");
-//        Data data = null;
-//        if(user == null){
-//            System.out.println("sns회원 :: "+userId);
-//            data = new Data("snsUser",userId);
-//        }
-//        if(userId == null){
-//            System.out.println("일반 회원 :: "+user);
-//            data = new Data("user", user);
-//        }
-//        if(user == null && userId == null){
-//            data = null;
-//        }
         System.out.println("세션 유지중인 유저 :: "+user);
         Data data = new Data ("success",user);
         return data;
@@ -312,7 +301,9 @@ public class userRestController {
         User info = userService.getUser(snsUserId);
         info.setBlackList(fanService.getBlackList(snsUserId));
 
-        session.setAttribute("user", info);
+        System.out.println("세션에 저잘될 정보는 :: "+info);
+
+        session.setAttribute("snsUser", info);
         response.sendRedirect(redirectUrl);
 
         Data data = new Data("success",info);
