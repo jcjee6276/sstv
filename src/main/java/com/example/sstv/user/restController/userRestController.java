@@ -67,6 +67,10 @@ public class userRestController {
         session.setAttribute("snsUser", info);
         response.sendRedirect(redirectUrl);
 
+        User user = (User)session.getAttribute("snsUser");
+
+        System.out.println("세션에 저장 완료 : "+user);
+
         Data data = new Data("success", info);
         return data;
     }
