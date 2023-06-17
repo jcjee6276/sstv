@@ -48,9 +48,6 @@ public class userRestController {
 
     @GetMapping(value="naverLogin")
     public Data naverLogin(@RequestParam(value = "code", required = false) String code, HttpSession session, HttpServletResponse response) throws Exception {
-        System.out.println("naver login1");
-        printSessionAttributes(session);
-
         String access_Token ="";
         access_Token = userService.getAccessToken(code);
         System.out.println("token 발급 완료! :: " +access_Token);
@@ -75,6 +72,9 @@ public class userRestController {
         System.out.println("세션에 저장 완료 : "+user);
 
         Data data = new Data("success", info);
+
+        System.out.println("naver login1");
+        printSessionAttributes(session);
         return data;
     }
 
@@ -114,6 +114,8 @@ public class userRestController {
     }
 
     public static void printSessionAttributes(HttpSession session) {
+        System.out.println("Session ID: " + session.getId());
+
         Enumeration<String> attributeNames = session.getAttributeNames();
         while (attributeNames.hasMoreElements()) {
             String attributeName = attributeNames.nextElement();
@@ -121,6 +123,7 @@ public class userRestController {
             System.out.println(attributeName + " : " + attributeValue);
         }
     }
+
 
     @GetMapping(value="login")
     public Data loginSessionCheck(HttpSession session){
