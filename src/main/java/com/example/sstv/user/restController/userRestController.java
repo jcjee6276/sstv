@@ -71,6 +71,7 @@ public class userRestController {
         User user = (User)session.getAttribute("snsUser");
 
         System.out.println("세션에 저장 완료 : "+user);
+        printSessionAttributes(session);
 
         Data data = new Data("success", info);
         return data;
@@ -112,6 +113,8 @@ public class userRestController {
     }
 
     public static void printSessionAttributes(HttpSession session) {
+        System.out.println("Session ID: " + session.getId());
+
         Enumeration<String> attributeNames = session.getAttributeNames();
         while (attributeNames.hasMoreElements()) {
             String attributeName = attributeNames.nextElement();
