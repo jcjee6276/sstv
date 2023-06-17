@@ -68,6 +68,7 @@ public class userRestController {
         session.setAttribute("snsUser", info);
 //        response.sendRedirect(redirectUrl);
         // 포워딩을 통한 페이지 이동
+        response.reset();
         request.getRequestDispatcher(redirectUrl).forward(request, response);
 
         User user = (User)session.getAttribute("snsUser");
@@ -343,6 +344,7 @@ public class userRestController {
         session.setAttribute("snsUser", info);
 //        response.sendRedirect(redirectUrl);
         // 포워딩을 통한 페이지 이동
+        response.reset();
         request.getRequestDispatcher(redirectUrl).forward(request, response);
 
         Data data = new Data("success",info);
