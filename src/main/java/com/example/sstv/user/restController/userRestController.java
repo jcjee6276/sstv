@@ -14,7 +14,9 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.websocket.SessionException;
 import org.json.simple.JSONObject;
+import com.example.sstv.user.SessionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +34,8 @@ public class userRestController {
     private UserService userService;
     @Autowired
     private FanService fanService;
+    @Autowired
+    private SessionContext sessionContext;
     @Value("${redirectUrl}")
     private String redirectUrl;
 
@@ -46,38 +50,38 @@ public class userRestController {
         return data;
     }
 
-    @GetMapping(value="naverLogin")
-    public Data naverLogin(@RequestParam(value = "code", required = false) String code, HttpSession session, HttpServletResponse response) throws Exception {
-        String access_Token ="";
-        access_Token = userService.getAccessToken(code);
-        System.out.println("token 발급 완료! :: " +access_Token);
-
-        //회원 정보 받아오기(from 네이버)
-        Map<String, Object> userInfo = userService.getUserInfo(access_Token);
-        System.out.println("userInfo..! :: "+userInfo);
-        String snsUserId = (String)userInfo.get("userId");
-        System.out.println(snsUserId);
-        //snsUserId로 회원 전체정보 가져오고 blackList 추가
-        User info = userService.getUser(snsUserId);
-        info.setBlackList((fanService.getBlackList(snsUserId)));
-
-        System.out.println("세션에 저장될 정보는 :: "+info);
-
-        //세션에 유저정보 저장 후, 메인화면으로 redirect.
-        session.setAttribute("snsUser", info);
-        String encodedRedirectUrl = response.encodeRedirectURL(redirectUrl);
-        response.sendRedirect(encodedRedirectUrl);
-
-        User user = (User)session.getAttribute("snsUser");
-
-        System.out.println("세션에 저장 완료 : "+user);
-
-        Data data = new Data("success", info);
-
-        System.out.println("naver login1");
-        printSessionAttributes(session);
-        return data;
-    }
+//    @GetMapping(value="naverLogin")
+//    public Data naverLogin(@RequestParam(value = "code", required = false) String code, HttpSession session, HttpServletResponse response) throws Exception {
+//        String access_Token ="";
+//        access_Token = userService.getAccessToken(code);
+//        System.out.println("token 발급 완료! :: " +access_Token);
+//
+//        //회원 정보 받아오기(from 네이버)
+//        Map<String, Object> userInfo = userService.getUserInfo(access_Token);
+//        System.out.println("userInfo..! :: "+userInfo);
+//        String snsUserId = (String)userInfo.get("userId");
+//        System.out.println(snsUserId);
+//        //snsUserId로 회원 전체정보 가져오고 blackList 추가
+//        User info = userService.getUser(snsUserId);
+//        info.setBlackList((fanService.getBlackList(snsUserId)));
+//
+//        System.out.println("세션에 저장될 정보는 :: "+info);
+//
+//        //세션에 유저정보 저장 후, 메인화면으로 redirect.
+//        session.setAttribute("snsUser", info);
+//        String encodedRedirectUrl = response.encodeRedirectURL(redirectUrl);
+//        response.sendRedirect(encodedRedirectUrl);
+//
+//        User user = (User)session.getAttribute("snsUser");
+//
+//        System.out.println("세션에 저장 완료 : "+user);
+//
+//        Data data = new Data("success", info);
+//
+//        System.out.println("naver login1");
+//        printSessionAttributes(session);
+//        return data;
+//    }
 
     // 회원 정보 조회
     @GetMapping(value="getUser/{userId}")
@@ -126,23 +130,70 @@ public class userRestController {
     }
 
 
+    @GetMapping(value="naverLogin")
+    public void naverLogin(@RequestParam(value = "code", required = false) String code, HttpSession session, HttpServletResponse response) throws Exception {
+        String access_Token ="";
+        access_Token = userService.getAccessToken(code);
+
+        Map<String, Object> userInfo = userService.getUserInfo(access_Token);
+        String snsUserId = (String)userInfo.get("userId");
+
+        User info = userService.getUser(snsUserId);
+        info.setBlackList((fanService.getBlackList(snsUserId)));
+
+        session.setAttribute("snsUser", info);
+        String sessionId = session.getId();
+
+        String encodedRedirectUrl = response.encodeRedirectURL(redirectUrl + "?sessionId=" + sessionId);
+        response.sendRedirect(encodedRedirectUrl);
+    }
+
     @GetMapping(value="login")
-    public Data loginSessionCheck(HttpSession session){
-        System.out.println("naver login2");
-        printSessionAttributes(session);
-        Data data = null;
-            if(session.getAttribute("user") != null) {
-                User user = (User) session.getAttribute("user");
-                System.out.println("세션 유지중인 유저 :: " + user);
-                data = new Data("success", user);
-            }else{
-                User snsUser = (User) session.getAttribute("snsUser");
-                System.out.println("sns 회원 세션 : "+snsUser);
-                data = new Data("success",snsUser);
+    public Data loginSessionCheck(@RequestParam(value = "sessionId", required = false) String sessionId, HttpSession session){
+        // 세션 ID로 세션을 찾고 현재 세션에 복사
+        if (sessionId != null) {
+            HttpSession storedSession = (HttpSession) sessionContext.getSession(sessionId);
+            if (storedSession != null) {
+                Enumeration<String> attributeNames = storedSession.getAttributeNames();
+                while (attributeNames.hasMoreElements()) {
+                    String attributeName = attributeNames.nextElement();
+                    Object attributeValue = storedSession.getAttribute(attributeName);
+                    session.setAttribute(attributeName, attributeValue);
+                }
             }
+        }
+
+        Data data = null;
+        if(session.getAttribute("user") != null) {
+            User user = (User) session.getAttribute("user");
+            data = new Data("success", user);
+        } else {
+            User snsUser = (User) session.getAttribute("snsUser");
+            data = new Data("success", snsUser);
+        }
 
         return data;
     }
+
+
+
+//    @GetMapping(value="login")
+//    public Data loginSessionCheck(HttpSession session){
+//        System.out.println("naver login2");
+//        printSessionAttributes(session);
+//        Data data = null;
+//            if(session.getAttribute("user") != null) {
+//                User user = (User) session.getAttribute("user");
+//                System.out.println("세션 유지중인 유저 :: " + user);
+//                data = new Data("success", user);
+//            }else{
+//                User snsUser = (User) session.getAttribute("snsUser");
+//                System.out.println("sns 회원 세션 : "+snsUser);
+//                data = new Data("success",snsUser);
+//            }
+//
+//        return data;
+//    }
 
 //    @GetMapping(value="snsLogin")
 //    public Data snsLoginSessionCheck(HttpSession session){
