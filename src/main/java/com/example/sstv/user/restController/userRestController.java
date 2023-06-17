@@ -67,15 +67,17 @@ public class userRestController {
         //세션에 유저정보 저장 후, 메인화면으로 redirect.
         session.setAttribute("snsUser", info);
 
-        // 세션 아이디 가져오기
-        String currentSessionId = session.getId();
-//        response.sendRedirect(redirectUrl);
-        // 리다이렉션 URL에 세션 아이디를 파라미터로 추가
-        String redirectUrlWithSessionId = redirectUrl + "?sessionId=" + currentSessionId;
+        response.sendRedirect("https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=oxyovmQ_xk_uAaUdHUKu&redirect_uri=http://223.130.135.131:8080/user/naverLogin&state=access_Token");
 
-        // URL 재작성을 수행하여 컨텍스트 경로를 포함한 절대 경로로 리다이렉션
-        String redirectUrlWithContext = request.getContextPath() + redirectUrlWithSessionId;
-        response.sendRedirect(redirectUrlWithContext);
+//        // 세션 아이디 가져오기
+//        String currentSessionId = session.getId();
+////        response.sendRedirect(redirectUrl);
+//        // 리다이렉션 URL에 세션 아이디를 파라미터로 추가
+//        String redirectUrlWithSessionId = redirectUrl + "?sessionId=" + currentSessionId;
+//
+//        // URL 재작성을 수행하여 컨텍스트 경로를 포함한 절대 경로로 리다이렉션
+//        String redirectUrlWithContext = request.getContextPath() + redirectUrlWithSessionId;
+//        response.sendRedirect(redirectUrlWithContext);
 
         User user = (User)session.getAttribute("snsUser");
 
@@ -361,15 +363,15 @@ public class userRestController {
         System.out.println("세션에 저장될 정보는 :: "+info);
 
         session.setAttribute("snsUser", info);
-//        response.sendRedirect(redirectUrl);
+        response.sendRedirect("https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=73b235263e9c55fb4e85a97648c1c0de&redirect_uri=http://223.130.135.131:8080/user/kakaoLogin&prompt=login");
 
-        String currentSessionId = session.getId();
-        // 리다이렉션 URL에 세션 아이디를 파라미터로 추가
-        String redirectUrlWithSessionId = redirectUrl + "?sessionId=" + currentSessionId;
-
-        // URL 재작성을 수행하여 컨텍스트 경로를 포함한 절대 경로로 리다이렉션
-        String redirectUrlWithContext = request.getContextPath() + redirectUrl;
-        response.sendRedirect(redirectUrlWithContext);
+//        String currentSessionId = session.getId();
+//        // 리다이렉션 URL에 세션 아이디를 파라미터로 추가
+//        String redirectUrlWithSessionId = redirectUrl + "?sessionId=" + currentSessionId;
+//
+//        // URL 재작성을 수행하여 컨텍스트 경로를 포함한 절대 경로로 리다이렉션
+//        String redirectUrlWithContext = request.getContextPath() + redirectUrl;
+//        response.sendRedirect(redirectUrlWithContext);
 
         Data data = new Data("success",info);
         return data;
