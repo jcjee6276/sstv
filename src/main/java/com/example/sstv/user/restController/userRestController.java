@@ -112,21 +112,28 @@ public class userRestController {
 
     @GetMapping(value="login")
     public Data loginSessionCheck(HttpSession session){
-            User user = (User) session.getAttribute("user");
-            System.out.println("세션 유지중인 유저 :: " + user);
-            Data data = new Data ("success",user);
+        Data data = null;
+            if(session.getAttribute("user") != null) {
+                User user = (User) session.getAttribute("user");
+                System.out.println("세션 유지중인 유저 :: " + user);
+                data = new Data("success", user);
+            }else{
+                User snsUser = (User) session.getAttribute("snsUser");
+                System.out.println("sns 회원 세션 : "+snsUser);
+                data = new Data("success",snsUser);
+            }
 
         return data;
     }
 
-    @GetMapping(value="snsLogin")
-    public Data snsLoginSessionCheck(HttpSession session){
-        User user = (User) session.getAttribute("snsUser");
-        System.out.println("세션 유지중인 유저 :: " + user);
-        Data data = new Data ("success",user);
-
-        return data;
-    }
+//    @GetMapping(value="snsLogin")
+//    public Data snsLoginSessionCheck(HttpSession session){
+//        User user = (User) session.getAttribute("snsUser");
+//        System.out.println("세션 유지중인 유저 :: " + user);
+//        Data data = new Data ("success",user);
+//
+//        return data;
+//    }
 
     @GetMapping(value = "logout")
     public Data logout(HttpSession session){
