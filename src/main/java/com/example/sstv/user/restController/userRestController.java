@@ -67,9 +67,9 @@ public class userRestController {
         //세션에 유저정보 저장 후, 메인화면으로 redirect.
         session.setAttribute("snsUser", info);
 //        response.sendRedirect(redirectUrl);
-        // 포워딩을 통한 페이지 이동
-        response.reset();
-        request.getRequestDispatcher(redirectUrl).forward(request, response);
+        // URL 재작성을 수행하여 컨텍스트 경로를 포함한 절대 경로로 리다이렉션
+        String redirectUrlWithContext = request.getContextPath() + redirectUrl;
+        response.sendRedirect(redirectUrlWithContext);
 
         User user = (User)session.getAttribute("snsUser");
 
@@ -343,9 +343,9 @@ public class userRestController {
 
         session.setAttribute("snsUser", info);
 //        response.sendRedirect(redirectUrl);
-        // 포워딩을 통한 페이지 이동
-        response.reset();
-        request.getRequestDispatcher(redirectUrl).forward(request, response);
+        // URL 재작성을 수행하여 컨텍스트 경로를 포함한 절대 경로로 리다이렉션
+        String redirectUrlWithContext = request.getContextPath() + redirectUrl;
+        response.sendRedirect(redirectUrlWithContext);
 
         Data data = new Data("success",info);
         return data;
