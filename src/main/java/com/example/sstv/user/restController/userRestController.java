@@ -47,7 +47,7 @@ public class userRestController {
     }
 
     @GetMapping(value="naverLogin")
-    public Data naverLogin(@RequestParam(value = "code", required = false) String code, HttpSession session, HttpServletResponse response) throws Exception {
+    public Data naverLogin(@RequestParam(value = "code", required = false) String code, HttpSession session, HttpServletResponse response, HttpServletRequest request) throws Exception {
 
         String access_Token ="";
         access_Token = userService.getAccessToken(code);
@@ -67,6 +67,8 @@ public class userRestController {
         //세션에 유저정보 저장 후, 메인화면으로 redirect.
         session.setAttribute("snsUser", info);
 //        response.sendRedirect(redirectUrl);
+        // 포워딩을 통한 페이지 이동
+        request.getRequestDispatcher(redirectUrl).forward(request, response);
 
         User user = (User)session.getAttribute("snsUser");
 
@@ -325,7 +327,7 @@ public class userRestController {
     }
 
     @GetMapping (value="kakaoLogin")
-    public Data kakaoLogin(@RequestParam(value = "code", required = false) String code,HttpSession session, HttpServletResponse response) throws Exception {
+    public Data kakaoLogin(@RequestParam(value = "code", required = false) String code,HttpSession session,HttpServletRequest request , HttpServletResponse response) throws Exception {
         System.out.println(code);
         //발급 받아온 접근 token
         String access_token = userService.getkakaoToken(code);
@@ -339,7 +341,9 @@ public class userRestController {
         System.out.println("세션에 저잘될 정보는 :: "+info);
 
         session.setAttribute("snsUser", info);
-        response.sendRedirect(redirectUrl);
+//        response.sendRedirect(redirectUrl);
+        // 포워딩을 통한 페이지 이동
+        request.getRequestDispatcher(redirectUrl).forward(request, response);
 
         Data data = new Data("success",info);
         return data;
