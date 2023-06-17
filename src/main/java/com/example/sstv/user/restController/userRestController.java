@@ -67,17 +67,15 @@ public class userRestController {
         //세션에 유저정보 저장 후, 메인화면으로 redirect.
         session.setAttribute("snsUser", info);
 
-        response.sendRedirect("https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=oxyovmQ_xk_uAaUdHUKu&redirect_uri=http://223.130.135.131:8080/user/naverLogin&state=access_Token");
+        // 세션 아이디 가져오기
+        String currentSessionId = session.getId();
+//        response.sendRedirect(redirectUrl);
+        // 리다이렉션 URL에 세션 아이디를 파라미터로 추가
+        String redirectUrlWithSessionId = redirectUrl + "?sessionId=" + currentSessionId;
 
-//        // 세션 아이디 가져오기
-//        String currentSessionId = session.getId();
-////        response.sendRedirect(redirectUrl);
-//        // 리다이렉션 URL에 세션 아이디를 파라미터로 추가
-//        String redirectUrlWithSessionId = redirectUrl + "?sessionId=" + currentSessionId;
-//
-//        // URL 재작성을 수행하여 컨텍스트 경로를 포함한 절대 경로로 리다이렉션
-//        String redirectUrlWithContext = request.getContextPath() + redirectUrlWithSessionId;
-//        response.sendRedirect(redirectUrlWithContext);
+        // URL 재작성을 수행하여 컨텍스트 경로를 포함한 절대 경로로 리다이렉션
+        String redirectUrlWithContext = request.getContextPath() + redirectUrlWithSessionId;
+        response.sendRedirect(redirectUrlWithContext);
 
         User user = (User)session.getAttribute("snsUser");
 
@@ -139,10 +137,11 @@ public class userRestController {
     public Data loginSessionCheck(HttpSession session, @RequestParam(value = "sessionId", required = false) String sessionId, HttpServletRequest request) {
         // 세션 아이디가 전달되었을 경우, 해당 세션 아이디로 세션을 복원
         if (sessionId != null) {
-            session = request.getSession(false);
-            if (session != null && sessionId.equals(session.getId())) {
+            HttpSession targetSession = request.getSession(false);
+            if (targetSession != null && sessionId.equals(targetSession.getId())) {
                 // 세션 복원 성공
                 System.out.println("세션 복원 성공: " + sessionId);
+                session = targetSession;
             } else {
                 // 세션 복원 실패
                 System.out.println("세션 복원 실패: " + sessionId);
@@ -163,6 +162,7 @@ public class userRestController {
 
         return data;
     }
+
 
 //    @GetMapping(value="snsLogin")
 //    public Data snsLoginSessionCheck(HttpSession session){
@@ -363,15 +363,15 @@ public class userRestController {
         System.out.println("세션에 저장될 정보는 :: "+info);
 
         session.setAttribute("snsUser", info);
-        response.sendRedirect("https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=73b235263e9c55fb4e85a97648c1c0de&redirect_uri=http://223.130.135.131:8080/user/kakaoLogin&prompt=login");
+//        response.sendRedirect(redirectUrl);
 
-//        String currentSessionId = session.getId();
-//        // 리다이렉션 URL에 세션 아이디를 파라미터로 추가
-//        String redirectUrlWithSessionId = redirectUrl + "?sessionId=" + currentSessionId;
-//
-//        // URL 재작성을 수행하여 컨텍스트 경로를 포함한 절대 경로로 리다이렉션
-//        String redirectUrlWithContext = request.getContextPath() + redirectUrl;
-//        response.sendRedirect(redirectUrlWithContext);
+        String currentSessionId = session.getId();
+        // 리다이렉션 URL에 세션 아이디를 파라미터로 추가
+        String redirectUrlWithSessionId = redirectUrl + "?sessionId=" + currentSessionId;
+
+        // URL 재작성을 수행하여 컨텍스트 경로를 포함한 절대 경로로 리다이렉션
+        String redirectUrlWithContext = request.getContextPath() + redirectUrl;
+        response.sendRedirect(redirectUrlWithContext);
 
         Data data = new Data("success",info);
         return data;
