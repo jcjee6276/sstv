@@ -119,7 +119,7 @@
     <update id="updateUser" parameterType="com.example.sstv.user.User" >
         UPDATE USER
         <set>
-            <if test="userType == 0 and password !=null">
+            <if test="userType == 0 and password !=null and password !=''">
                 passwd = #{password},
             </if>
             <if test="userType == 1">
