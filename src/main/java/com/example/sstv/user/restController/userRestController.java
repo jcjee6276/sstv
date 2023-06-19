@@ -10,6 +10,7 @@ import com.example.sstv.user.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -70,12 +71,15 @@ public class userRestController {
         // 세션 아이디 가져오기
         String currentSessionId = session.getId();
 //        response.sendRedirect(redirectUrl);
-        // 리다이렉션 URL에 세션 아이디를 파라미터로 추가
-        String redirectUrlWithSessionId = redirectUrl + "?sessionId=" + currentSessionId;
+//        // 리다이렉션 URL에 세션 아이디를 파라미터로 추가
+//        String redirectUrlWithSessionId = redirectUrl + "?sessionId=" + currentSessionId;
+//
+//        // URL 재작성을 수행하여 컨텍스트 경로를 포함한 절대 경로로 리다이렉션
+//        String redirectUrlWithContext = request.getContextPath() + redirectUrlWithSessionId;
+//        response.sendRedirect(redirectUrlWithContext);
+        RequestDispatcher dispatcher = request.getRequestDispatcher(redirectUrl); // 전달할 페이지 경로
+        dispatcher.forward(request, response);
 
-        // URL 재작성을 수행하여 컨텍스트 경로를 포함한 절대 경로로 리다이렉션
-        String redirectUrlWithContext = request.getContextPath() + redirectUrlWithSessionId;
-        response.sendRedirect(redirectUrlWithContext);
 
         User user = (User)session.getAttribute("user");
 
@@ -135,42 +139,19 @@ public class userRestController {
 
     @GetMapping(value = "login")
     public Data loginSessionCheck(HttpSession session, @RequestParam(value = "sessionId", required = false) String sessionId, HttpServletRequest request) {
-//        // 세션 아이디가 전달되었을 경우, 해당 세션 아이디로 세션을 복원
+        System.out.println("로그인 세션 가져오기");
+        User user = (User) session.getAttribute("user");
+//        System.out.println("로그인 세션 가져오기.."+sessionId);
+//        session = request.getSession(false);
+//        printSessionAttributes(session);
 //        if (sessionId != null) {
-//            HttpSession targetSession = request.getSession(false);
-//            if (targetSession != null && sessionId.equals(targetSession.getId())) {
-//                // 세션 복원 성공
-//                System.out.println("세션 복원 성공: " + sessionId);
-//                session = targetSession;
+//            if (session != null && sessionId.equals(session.getId())) {
+//                user = (User) session.getAttribute("user");
+//                System.out.println("sns회원 세션 :: " + user);
 //            } else {
-//                // 세션 복원 실패
-//                System.out.println("세션 복원 실패: " + sessionId);
+//                System.out.println("세션 복원 실패");
 //            }
 //        }
-//
-//        printSessionAttributes(session);
-//        Data data = null;
-//        if (session.getAttribute("user") != null) {
-//            User user = (User) session.getAttribute("user");
-//            System.out.println("세션 유지중인 유저 :: " + user);
-//            data = new Data("success", user);
-//        } else {
-//            User snsUser = (User) session.getAttribute("snsUser");
-//            System.out.println("sns 회원 세션 : " + snsUser);
-//            data = new Data("success", snsUser);
-//        }
-        User user = null;
-        System.out.println("로그인 세션 가져오기.."+sessionId);
-        session = request.getSession(false);
-        printSessionAttributes(session);
-        if (sessionId != null) {
-            if (session != null && sessionId.equals(session.getId())) {
-                user = (User) session.getAttribute("user");
-                System.out.println("sns회원 세션 :: " + user);
-            } else {
-                System.out.println("세션 복원 실패");
-            }
-        }
         System.out.println("세션에 저장된 정보는 :: "+user);
         Data data = new Data("success", user);
 
@@ -379,13 +360,15 @@ public class userRestController {
         session.setAttribute("user", info);
 //        response.sendRedirect(redirectUrl);
 
-        String currentSessionId = session.getId();
-        // 리다이렉션 URL에 세션 아이디를 파라미터로 추가
-        String redirectUrlWithSessionId = redirectUrl + "?sessionId=" + currentSessionId;
-
-        // URL 재작성을 수행하여 컨텍스트 경로를 포함한 절대 경로로 리다이렉션
-        String redirectUrlWithContext = request.getContextPath() + redirectUrl;
-        response.sendRedirect(redirectUrlWithContext);
+//        String currentSessionId = session.getId();
+//        // 리다이렉션 URL에 세션 아이디를 파라미터로 추가
+//        String redirectUrlWithSessionId = redirectUrl + "?sessionId=" + currentSessionId;
+//
+//        // URL 재작성을 수행하여 컨텍스트 경로를 포함한 절대 경로로 리다이렉션
+//        String redirectUrlWithContext = request.getContextPath() + redirectUrl;
+//        response.sendRedirect(redirectUrlWithContext);
+        RequestDispatcher dispatcher = request.getRequestDispatcher(redirectUrl); // 전달할 페이지 경로
+        dispatcher.forward(request, response);
 
         Data data = new Data("success",info);
         return data;
