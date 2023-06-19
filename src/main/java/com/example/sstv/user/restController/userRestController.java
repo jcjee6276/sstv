@@ -165,6 +165,7 @@ public class userRestController {
         printSessionAttributes(session);
         if(session != null && sessionId.equals(session.getId())){
             user = (User)session.getAttribute("user");
+            System.out.println("sns회원 세션 :: "+user);
         }
         System.out.println("세션에 저장된 정보는 :: "+user);
         Data data = new Data("success", user);
