@@ -47,7 +47,8 @@ public class userRestController {
     }
 
     @GetMapping(value="naverLogin")
-    public Data naverLogin(@RequestParam(value = "code", required = false) String code, HttpSession session, HttpServletResponse response) throws Exception {
+    public Data naverLogin(@RequestParam(value = "code", required = false) String code, HttpSession session, HttpServletResponse response, HttpServletRequest request) throws Exception {
+
         String access_Token ="";
         access_Token = userService.getAccessToken(code);
         System.out.println("token 발급 완료! :: " +access_Token);
@@ -61,9 +62,25 @@ public class userRestController {
         User info = userService.getUser(snsUserId);
         info.setBlackList((fanService.getBlackList(snsUserId)));
 
+        System.out.println("세션에 저장될 정보는 :: "+info);
+
         //세션에 유저정보 저장 후, 메인화면으로 redirect.
-        session.setAttribute("user", info);
-        response.sendRedirect(redirectUrl);
+        session.setAttribute("snsUser", info);
+
+        // 세션 아이디 가져오기
+        String currentSessionId = session.getId();
+//        response.sendRedirect(redirectUrl);
+        // 리다이렉션 URL에 세션 아이디를 파라미터로 추가
+        String redirectUrlWithSessionId = redirectUrl + "?sessionId=" + currentSessionId;
+
+        // URL 재작성을 수행하여 컨텍스트 경로를 포함한 절대 경로로 리다이렉션
+        String redirectUrlWithContext = request.getContextPath() + redirectUrlWithSessionId;
+        response.sendRedirect(redirectUrlWithContext);
+
+        User user = (User)session.getAttribute("snsUser");
+
+        System.out.println("세션에 저장 완료 : "+user);
+        printSessionAttributes(session);
 
         Data data = new Data("success", info);
         return data;
@@ -95,6 +112,7 @@ public class userRestController {
             session.setAttribute("user", info);
             //로그인되며, 회원탈퇴 절차 취소
             userService.removeUserCancle(info.getUserId());
+            printSessionAttributes(session);
             data = new Data("success", info);
         }else{
             System.out.println("아이디 패스워드 불일치");
@@ -104,26 +122,56 @@ public class userRestController {
         return data;
     }
 
-    @GetMapping(value="login")
-    public Data loginSessionCheck(HttpSession session){
-        User user = (User)session.getAttribute("user");
-//        String userId = (String)session.getAttribute("snsUser");
-//        Data data = null;
-//        if(user == null){
-//            System.out.println("sns회원 :: "+userId);
-//            data = new Data("snsUser",userId);
-//        }
-//        if(userId == null){
-//            System.out.println("일반 회원 :: "+user);
-//            data = new Data("user", user);
-//        }
-//        if(user == null && userId == null){
-//            data = null;
-//        }
-        System.out.println("세션 유지중인 유저 :: "+user);
-        Data data = new Data ("success",user);
+    public static void printSessionAttributes(HttpSession session) {
+        System.out.println("Session ID: " + session.getId());
+
+        Enumeration<String> attributeNames = session.getAttributeNames();
+        while (attributeNames.hasMoreElements()) {
+            String attributeName = attributeNames.nextElement();
+            Object attributeValue = session.getAttribute(attributeName);
+            System.out.println(attributeName + " : " + attributeValue);
+        }
+    }
+
+    @GetMapping(value = "login")
+    public Data loginSessionCheck(HttpSession session, @RequestParam(value = "sessionId", required = false) String sessionId, HttpServletRequest request) {
+        // 세션 아이디가 전달되었을 경우, 해당 세션 아이디로 세션을 복원
+        if (sessionId != null) {
+            HttpSession targetSession = request.getSession(false);
+            if (targetSession != null && sessionId.equals(targetSession.getId())) {
+                // 세션 복원 성공
+                System.out.println("세션 복원 성공: " + sessionId);
+                session = targetSession;
+            } else {
+                // 세션 복원 실패
+                System.out.println("세션 복원 실패: " + sessionId);
+            }
+        }
+
+        printSessionAttributes(session);
+        Data data = null;
+        if (session.getAttribute("user") != null) {
+            User user = (User) session.getAttribute("user");
+            System.out.println("세션 유지중인 유저 :: " + user);
+            data = new Data("success", user);
+        } else {
+            User snsUser = (User) session.getAttribute("snsUser");
+            System.out.println("sns 회원 세션 : " + snsUser);
+            data = new Data("success", snsUser);
+        }
+
         return data;
     }
+
+
+//    @GetMapping(value="snsLogin")
+//    public Data snsLoginSessionCheck(HttpSession session){
+//        User user = (User) session.getAttribute("snsUser");
+//        System.out.println("세션 유지중인 유저 :: " + user);
+//        Data data = new Data ("success",user);
+//
+//        return data;
+//    }
 
     @GetMapping(value = "logout")
     public Data logout(HttpSession session){
@@ -301,7 +349,7 @@ public class userRestController {
     }
 
     @GetMapping (value="kakaoLogin")
-    public Data kakaoLogin(@RequestParam(value = "code", required = false) String code,HttpSession session, HttpServletResponse response) throws Exception {
+    public Data kakaoLogin(@RequestParam(value = "code", required = false) String code,HttpSession session,HttpServletRequest request , HttpServletResponse response) throws Exception {
         System.out.println(code);
         //발급 받아온 접근 token
         String access_token = userService.getkakaoToken(code);
@@ -312,8 +360,18 @@ public class userRestController {
         User info = userService.getUser(snsUserId);
         info.setBlackList(fanService.getBlackList(snsUserId));
 
-        session.setAttribute("user", info);
-        response.sendRedirect(redirectUrl);
+        System.out.println("세션에 저장될 정보는 :: "+info);
+
+        session.setAttribute("snsUser", info);
+//        response.sendRedirect(redirectUrl);
+
+        String currentSessionId = session.getId();
+        // 리다이렉션 URL에 세션 아이디를 파라미터로 추가
+        String redirectUrlWithSessionId = redirectUrl + "?sessionId=" + currentSessionId;
+
+        // URL 재작성을 수행하여 컨텍스트 경로를 포함한 절대 경로로 리다이렉션
+        String redirectUrlWithContext = request.getContextPath() + redirectUrl;
+        response.sendRedirect(redirectUrlWithContext);
 
         Data data = new Data("success",info);
         return data;

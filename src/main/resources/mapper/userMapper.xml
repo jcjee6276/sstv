@@ -67,7 +67,7 @@
         SELECT
         user_nickname
         FROM USER
-        WHERE user_id = #{value}
+        WHERE user_nickname = #{value}
     </select>
 
     <!-- 아이디 찾기. -->
@@ -119,7 +119,7 @@
     <update id="updateUser" parameterType="com.example.sstv.user.User" >
         UPDATE USER
         <set>
-            <if test="userType == 0 and password !=null">
+            <if test="userType == 0 and password !=null and password !=''">
                 passwd = #{password},
             </if>
             <if test="userType == 1">
