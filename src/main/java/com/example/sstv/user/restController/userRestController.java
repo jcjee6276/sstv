@@ -68,18 +68,9 @@ public class userRestController {
         //세션에 유저정보 저장 후, 메인화면으로 redirect.
         session.setAttribute("user", info);
 
-        // 세션 아이디 가져오기
-        String currentSessionId = session.getId();
 //        response.sendRedirect(redirectUrl);
-//        // 리다이렉션 URL에 세션 아이디를 파라미터로 추가
-//        String redirectUrlWithSessionId = redirectUrl + "?sessionId=" + currentSessionId;
-//
-//        // URL 재작성을 수행하여 컨텍스트 경로를 포함한 절대 경로로 리다이렉션
-//        String redirectUrlWithContext = request.getContextPath() + redirectUrlWithSessionId;
-//        response.sendRedirect(redirectUrlWithContext);
-        RequestDispatcher dispatcher = request.getRequestDispatcher(redirectUrl); // 전달할 페이지 경로
-        dispatcher.forward(request, response);
-
+        String redirectUrlWithUserId = redirectUrl + "?sns=" + snsUserId;
+        response.sendRedirect(redirectUrlWithUserId);
 
         User user = (User)session.getAttribute("user");
 
@@ -141,17 +132,6 @@ public class userRestController {
     public Data loginSessionCheck(HttpSession session, @RequestParam(value = "sessionId", required = false) String sessionId, HttpServletRequest request) {
         System.out.println("로그인 세션 가져오기");
         User user = (User) session.getAttribute("user");
-//        System.out.println("로그인 세션 가져오기.."+sessionId);
-//        session = request.getSession(false);
-//        printSessionAttributes(session);
-//        if (sessionId != null) {
-//            if (session != null && sessionId.equals(session.getId())) {
-//                user = (User) session.getAttribute("user");
-//                System.out.println("sns회원 세션 :: " + user);
-//            } else {
-//                System.out.println("세션 복원 실패");
-//            }
-//        }
         System.out.println("세션에 저장된 정보는 :: "+user);
         Data data = new Data("success", user);
 
@@ -359,6 +339,8 @@ public class userRestController {
 
         session.setAttribute("user", info);
 //        response.sendRedirect(redirectUrl);
+        String redirectUrlWithUserId = redirectUrl + "?sns=" + snsUserId;
+        response.sendRedirect(redirectUrlWithUserId);
 
 //        String currentSessionId = session.getId();
 //        // 리다이렉션 URL에 세션 아이디를 파라미터로 추가
