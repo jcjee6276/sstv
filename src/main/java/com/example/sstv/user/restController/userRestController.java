@@ -65,7 +65,7 @@ public class userRestController {
         System.out.println("세션에 저장될 정보는 :: "+info);
 
         //세션에 유저정보 저장 후, 메인화면으로 redirect.
-        session.setAttribute("snsUser", info);
+        session.setAttribute("user", info);
 
         // 세션 아이디 가져오기
         String currentSessionId = session.getId();
@@ -79,7 +79,7 @@ public class userRestController {
 
         User user = (User)session.getAttribute("user");
 
-        System.out.println("세션에 저장 완료 : "+user);
+        System.out.println("snsUser 세션에 저장 완료 : "+user);
         printSessionAttributes(session);
 
         Data data = new Data("success", info);
@@ -159,6 +159,8 @@ public class userRestController {
 //            System.out.println("sns 회원 세션 : " + snsUser);
 //            data = new Data("success", snsUser);
 //        }
+        System.out.println("로그인 세션 가져오기..");
+        printSessionAttributes(session);
         User user = (User) session.getAttribute("user");
         System.out.println("세션에 저장된 정보는 :: "+user);
         Data data = new Data("success", user);
