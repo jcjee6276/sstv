@@ -163,11 +163,13 @@ public class userRestController {
         System.out.println("로그인 세션 가져오기.."+sessionId);
         session = request.getSession(false);
         printSessionAttributes(session);
-        if(session != null && sessionId.equals(session.getId())){
-            user = (User)session.getAttribute("user");
-            System.out.println("sns회원 세션 :: "+user);
-        }else{
-            user = null;
+        if (sessionId != null) {
+            if (session != null && sessionId.equals(session.getId())) {
+                user = (User) session.getAttribute("user");
+                System.out.println("sns회원 세션 :: " + user);
+            } else {
+                System.out.println("세션 복원 실패");
+            }
         }
         System.out.println("세션에 저장된 정보는 :: "+user);
         Data data = new Data("success", user);
