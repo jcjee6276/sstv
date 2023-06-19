@@ -159,9 +159,13 @@ public class userRestController {
 //            System.out.println("sns 회원 세션 : " + snsUser);
 //            data = new Data("success", snsUser);
 //        }
-        System.out.println("로그인 세션 가져오기..");
+        User user = null;
+        System.out.println("로그인 세션 가져오기.."+sessionId);
+        session = request.getSession(false);
         printSessionAttributes(session);
-        User user = (User) session.getAttribute("user");
+        if(session != null && sessionId.equals(session.getId())){
+            user = (User)session.getAttribute("user");
+        }
         System.out.println("세션에 저장된 정보는 :: "+user);
         Data data = new Data("success", user);
 
