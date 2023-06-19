@@ -77,7 +77,7 @@ public class userRestController {
         String redirectUrlWithContext = request.getContextPath() + redirectUrlWithSessionId;
         response.sendRedirect(redirectUrlWithContext);
 
-        User user = (User)session.getAttribute("snsUser");
+        User user = (User)session.getAttribute("user");
 
         System.out.println("세션에 저장 완료 : "+user);
         printSessionAttributes(session);
@@ -135,30 +135,33 @@ public class userRestController {
 
     @GetMapping(value = "login")
     public Data loginSessionCheck(HttpSession session, @RequestParam(value = "sessionId", required = false) String sessionId, HttpServletRequest request) {
-        // 세션 아이디가 전달되었을 경우, 해당 세션 아이디로 세션을 복원
-        if (sessionId != null) {
-            HttpSession targetSession = request.getSession(false);
-            if (targetSession != null && sessionId.equals(targetSession.getId())) {
-                // 세션 복원 성공
-                System.out.println("세션 복원 성공: " + sessionId);
-                session = targetSession;
-            } else {
-                // 세션 복원 실패
-                System.out.println("세션 복원 실패: " + sessionId);
-            }
-        }
-
-        printSessionAttributes(session);
-        Data data = null;
-        if (session.getAttribute("user") != null) {
-            User user = (User) session.getAttribute("user");
-            System.out.println("세션 유지중인 유저 :: " + user);
-            data = new Data("success", user);
-        } else {
-            User snsUser = (User) session.getAttribute("snsUser");
-            System.out.println("sns 회원 세션 : " + snsUser);
-            data = new Data("success", snsUser);
-        }
+//        // 세션 아이디가 전달되었을 경우, 해당 세션 아이디로 세션을 복원
+//        if (sessionId != null) {
+//            HttpSession targetSession = request.getSession(false);
+//            if (targetSession != null && sessionId.equals(targetSession.getId())) {
+//                // 세션 복원 성공
+//                System.out.println("세션 복원 성공: " + sessionId);
+//                session = targetSession;
+//            } else {
+//                // 세션 복원 실패
+//                System.out.println("세션 복원 실패: " + sessionId);
+//            }
+//        }
+//
+//        printSessionAttributes(session);
+//        Data data = null;
+//        if (session.getAttribute("user") != null) {
+//            User user = (User) session.getAttribute("user");
+//            System.out.println("세션 유지중인 유저 :: " + user);
+//            data = new Data("success", user);
+//        } else {
+//            User snsUser = (User) session.getAttribute("snsUser");
+//            System.out.println("sns 회원 세션 : " + snsUser);
+//            data = new Data("success", snsUser);
+//        }
+        User user = (User) session.getAttribute("user");
+        System.out.println("세션에 저장된 정보는 :: "+user);
+        Data data = new Data("success", user);
 
         return data;
     }
@@ -362,7 +365,7 @@ public class userRestController {
 
         System.out.println("세션에 저장될 정보는 :: "+info);
 
-        session.setAttribute("snsUser", info);
+        session.setAttribute("user", info);
 //        response.sendRedirect(redirectUrl);
 
         String currentSessionId = session.getId();
