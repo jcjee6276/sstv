@@ -1,9 +1,7 @@
 package com.example.sstv.community.DAO;
 
 import com.example.sstv.common.Search;
-import com.example.sstv.community.Comments;
-import com.example.sstv.community.Community;
-import com.example.sstv.community.Streaming;
+import com.example.sstv.community.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -21,8 +19,10 @@ public interface CommunityDAO {
     void updateWriting(Community community);
 
     void addComments(Comments comments);
+    void addVod(Vod vod);
 
     List<Comments> getCommentsList(int writingNo);
+    List<VodComments> getVodCommentsList(int vodNo);
 
     void deleteComments(int commentsNo);
 
@@ -39,4 +39,15 @@ public interface CommunityDAO {
     Community getNotice(String hostUserId);
 
     Streaming finishStreaming(int StreamingNo);
+
+    List<Vod> getVodList(String hostUserId);
+
+    List<Vod> getAllVodList();
+
+    Vod getVod(int vodNo);
+
+    void addVodView(int vodNo);
+    void addVodComments(VodComments vodcomments);
+
+    int getVodCommentCount(int vodNo);
 }

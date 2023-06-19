@@ -8,18 +8,18 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
 import com.example.sstv.common.Data;
-import com.example.sstv.community.Comments;
-import com.example.sstv.community.Community;
-import com.example.sstv.community.Streaming;
+import com.example.sstv.community.*;
 import com.example.sstv.community.service.CommunityService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.*;
 import java.io.*;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
 
 @RestController
 @RequestMapping("/community/*")
@@ -50,6 +50,100 @@ public class communityRestController {
         return data;
     }
 
+    @PostMapping(value = "addVod", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public Data addVod(  @RequestPart(value = "file", required = false) MultipartFile file, @RequestPart("jsonData") String jsonData) throws IOException {
+        System.out.println("둘다"+jsonData);
+        Vod vod = new ObjectMapper().readValue(jsonData, Vod.class);
+
+        final String endPoint = "https://kr.object.ncloudstorage.com";
+        final String regionName = "kr-standard";
+        final String accessKey = "z4Xcnb9Fi7MmuSeksVf4";
+        final String secretKey = "nt9eOEVgBxjdmjqOgP9Xee44ADNmEDT171bekE2u";
+
+        String originalFilename = file.getOriginalFilename();
+        String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        String uuid = UUID.randomUUID().toString();
+        vod.setFileName(uuid);
+        System.out.println("변환"+vod);
+// S3 client
+        final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
+                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+                .build();
+
+        String bucketName = "hls";
+
+// create folder
+        String folderName = "vod/";
+
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(0L);
+        objectMetadata.setContentType("application/x-directory");
+        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, folderName, new ByteArrayInputStream(new byte[0]), objectMetadata);
+
+        try {
+            s3.putObject(putObjectRequest);
+            System.out.format("Folder %s has been created.\n", folderName);
+        } catch (AmazonS3Exception e) {
+            e.printStackTrace();
+        } catch(SdkClientException e) {
+            e.printStackTrace();
+        }
+
+// upload local file
+        String objectName = folderName+uuid+".mp4";
+        MultipartFile filePath = file;
+        InputStream inputStream = filePath.getInputStream();
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength((filePath.getSize()));
+        try {
+            s3.putObject(bucketName, objectName, inputStream, metadata );
+            s3.setObjectAcl(bucketName, objectName, CannedAccessControlList.PublicRead);
+            System.out.format("Object %s has been created.\n", objectName);
+        } catch (AmazonS3Exception e) {
+            e.printStackTrace();
+        } catch(SdkClientException e) {
+            e.printStackTrace();
+        }
+
+        String ffmpegPath = "/usr/bin/ffmpeg";
+        String fileName = uuid+".jpg";
+        String inputFilePath = "https://kr.object.ncloudstorage.com/hls/vod/"+uuid+".mp4";
+        String outputFilePath = "/image/"+fileName;
+        int timeInSeconds = 10;
+
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder(ffmpegPath, "-ss", String.valueOf(timeInSeconds), "-i", inputFilePath, "-vframes", "1", "-q:v", "2", outputFilePath);
+            Process process = processBuilder.start();
+            process.waitFor();
+            System.out.println("썸네일 생성이 완료되었습니다.");
+        } catch (IOException | InterruptedException e){
+            e.printStackTrace();
+        }
+
+        String replayBucket = "hls";
+        String replayFolderName = "vod/vodImage/";
+        String replayObjectName = replayFolderName+uuid+".jpg";
+//        String replayFilePath = "/image/"+filePath;
+        String replayFilePath = "/image/"+fileName;
+
+        try {
+            s3.putObject(replayBucket, replayObjectName, new File(replayFilePath));
+            s3.setObjectAcl(replayBucket, replayObjectName, CannedAccessControlList.PublicRead);
+            System.out.format("Object %s has been created.\n", replayObjectName);
+        } catch (AmazonS3Exception e) {
+            e.printStackTrace();
+        } catch(SdkClientException e) {
+            e.printStackTrace();
+        }
+
+
+        communityService.addVod(vod);
+//        communityService.addVod(vod);
+        Data data = new Data("success", "성공");
+        return data;
+    }
+
     @GetMapping(value = "deleteWriting/{writingNo}")
     public Data deleteWriting(@PathVariable int writingNo) {
         communityService.deleteWriting(writingNo);
@@ -71,6 +165,22 @@ public class communityRestController {
         Data data = new Data("success","");
         return data;
     }
+
+    @GetMapping(value="addVodView/{vodNo}")
+    public Data addVodView(@PathVariable int vodNo){
+        communityService.addVodView(vodNo);
+        Data data = new Data("success","");
+        return data;
+    }
+
+    @GetMapping(value="getVodCategory/{cagetogy}")
+    public Data getVodCategory(@PathVariable int category){
+
+        Data data = new Data("success", "");
+        return data;
+    }
+
+
 
 
 
@@ -100,10 +210,27 @@ public class communityRestController {
         return data;
     }
 
+    @PostMapping(value = "addVodComments", consumes = "application/json;")
+    public Data addVodComments(@RequestBody VodComments vodComments) {
+
+
+        communityService.addVodComments(vodComments);
+
+        Data data = new Data("success", "댓글 추가 성공");
+        return data;
+    }
+
     @GetMapping(value = "getCommentsList/{writingNo}")
     public Data getCommentsList(@PathVariable int writingNo) {
         Map<String, Object> map = communityService.getCommentsList(writingNo);
         Data data = new Data("success", map.get("list"));
+        return data;
+    }
+
+    @GetMapping(value = "getVodCommentsList/{vodNo}")
+    public Data getVodCommentsList(@PathVariable int vodNo) {
+        Map<String, Object> map = communityService.getVodCommentsList(vodNo);
+        Data data = new Data("success", map.get("list"), map.get("count"));
         return data;
     }
 
@@ -285,6 +412,33 @@ public class communityRestController {
         Data data = new Data("success", "");
         return data;
     }
+
+    @GetMapping(value = "getVodList/{hostUserId}")
+    public Data getVodList(@PathVariable String hostUserId) {
+        Map<String, Object> map = communityService.getVodList(hostUserId);
+//        map.put("count", communityService.getWritingCount(hostUserId));
+
+        Data data = new Data("success", map.get("list"));
+        return data;
+    }
+
+    @GetMapping(value = "getAllVodList")
+    public Data getAllVodList() {
+        Map<String, Object> map = communityService.getAllVodList();
+//        map.put("count", communityService.getWritingCount(hostUserId));
+
+        Data data = new Data("success", map.get("list"));
+        return data;
+    }
+
+    @GetMapping(value="getVod/{vodNo}")
+    public Data getVod(@PathVariable int vodNo){
+
+
+        Data data = new Data("success", communityService.getVod(vodNo));
+        return data;
+    }
+
 
 
     @GetMapping(value="createThumbnails")
