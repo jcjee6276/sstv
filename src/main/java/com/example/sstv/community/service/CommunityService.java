@@ -1,10 +1,8 @@
 package com.example.sstv.community.service;
 
 import com.example.sstv.common.Search;
-import com.example.sstv.community.Comments;
-import com.example.sstv.community.Community;
+import com.example.sstv.community.*;
 import com.example.sstv.community.DAO.CommunityDAO;
-import com.example.sstv.community.Streaming;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +39,9 @@ public class CommunityService {
     public void addComments(Comments comments){
         communityDao.addComments(comments);
     }
+    public void addVod(Vod vod){
+        communityDao.addVod(vod);
+    }
 
     public Map<String, Object> getCommentsList(int writingNo){
         List<Comments> list = (List<Comments>) communityDao.getCommentsList(writingNo);
@@ -49,6 +50,17 @@ public class CommunityService {
         map.put("list", list);
         return map;
     }
+
+    public Map<String, Object> getVodCommentsList(int vodNo){
+        List<VodComments> list = (List<VodComments>) communityDao.getVodCommentsList(vodNo);
+        int count = communityDao.getVodCommentCount(vodNo);
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        map.put("list", list);
+        map.put("count", count);
+        return map;
+    }
+
 
     public void deleteComments(int writingNo){
         communityDao.deleteComments(writingNo);
@@ -76,9 +88,35 @@ public class CommunityService {
 
         return map;
     }
+    public Map<String, Object> getVodList(String hostUserId){
+        List<Vod> list = (List<Vod>) communityDao.getVodList(hostUserId);
 
+        Map<String, Object> map = new HashMap<String,Object>();
+
+        map.put("list", list);
+
+        return map;
+    }
+
+    public Map<String, Object> getAllVodList(){
+        List<Vod> list = (List<Vod>) communityDao.getAllVodList();
+
+        Map<String, Object> map = new HashMap<String,Object>();
+
+        map.put("list", list);
+
+        return map;
+    }
+
+    public Vod getVod(int VodNo){
+        Vod vod = communityDao.getVod(VodNo);
+        return vod;
+    }
     public void addView(int writingNo){
         communityDao.addView(writingNo);
+    }
+    public void addVodView(int vodNo){
+        communityDao.addVodView(vodNo);
     }
 
     public void addNotice(int writingNo){
@@ -91,5 +129,9 @@ public class CommunityService {
 
     public Streaming finishStreaming(int streamingNo){
         return communityDao.finishStreaming(streamingNo);
+    }
+
+    public void addVodComments(VodComments vodComments){
+        communityDao.addVodComments(vodComments);
     }
 }
