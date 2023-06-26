@@ -18,6 +18,7 @@
         <result property="fileName" column="file_name"      jdbcType="VARCHAR" />
         <result property="view"       column="view"             jdbcType="NUMERIC" />
         <result property="category"       column="category"             jdbcType="NUMERIC" />
+        <result property="hostNickName" column="hostnickname"           jdbcType="VARCHAR" />
 <!--        <result property="commentCount" column="comment_count"      jdbcType="NUMERIC" />-->
 
 
@@ -43,6 +44,8 @@
         <result property="notice"       column="notice"             jdbcType="TIMESTAMP" />
         <result property="view"       column="view"             jdbcType="NUMERIC" />
         <result property="up"       column="up"             jdbcType="NUMERIC" />
+        <result property="hostNickName" column="host_nickname" jdbcType="VARCHAR" />
+        <result property="guestNickName" column="guset_nickname" jdbcType="VARCHAR" />
 
         <collection property="comments" ofType="com.example.sstv.community.Comments">
             <result property="commentsNo" 		column="comments_no" 			jdbcType="NUMERIC" />

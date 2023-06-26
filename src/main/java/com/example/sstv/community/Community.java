@@ -7,23 +7,16 @@ public class Community {
     private Date notice;
     private int view;
 
-    public Date getNotice() {
-        return notice;
-    }
-
-    public void setNotice(Date notice) {
-        this.notice = notice;
-    }
-
-    public int getView() {
-        return view;
-    }
+    private String hostNickName;
+    private String guestNickName;
 
     @Override
     public String toString() {
         return "Community{" +
                 "notice=" + notice +
                 ", view=" + view +
+                ", hostNickName='" + hostNickName + '\'' +
+                ", guestNickName='" + guestNickName + '\'' +
                 ", up=" + up +
                 ", writingNo=" + writingNo +
                 ", commentCount=" + commentCount +
@@ -35,6 +28,34 @@ public class Community {
                 ", regDate=" + regDate +
                 ", content='" + content + '\'' +
                 '}';
+    }
+
+    public String getHostNickName() {
+        return hostNickName;
+    }
+
+    public void setHostNickName(String hostNickName) {
+        this.hostNickName = hostNickName;
+    }
+
+    public String getGuestNickName() {
+        return guestNickName;
+    }
+
+    public void setGuestNickName(String guestNickName) {
+        this.guestNickName = guestNickName;
+    }
+
+    public Date getNotice() {
+        return notice;
+    }
+
+    public void setNotice(Date notice) {
+        this.notice = notice;
+    }
+
+    public int getView() {
+        return view;
     }
 
     public void setView(int view) {

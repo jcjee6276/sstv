@@ -58,26 +58,26 @@ public class userRestController {
         Map<String, Object> userInfo = userService.getUserInfo(access_Token);
         System.out.println("userInfo..! :: "+userInfo);
         String snsUserId = (String)userInfo.get("userId");
-        System.out.println(snsUserId);
-        //snsUserId로 회원 전체정보 가져오고 blackList 추가
+//        System.out.println(snsUserId);
+//        //snsUserId로 회원 전체정보 가져오고 blackList 추가
         User info = userService.getUser(snsUserId);
         info.setBlackList((fanService.getBlackList(snsUserId)));
-
-        System.out.println("세션에 저장될 정보는 :: "+info);
-
-        //세션에 유저정보 저장 후, 메인화면으로 redirect.
+//
+//        System.out.println("세션에 저장될 정보는 :: "+info);
+//
+//        //세션에 유저정보 저장 후, 메인화면으로 redirect.
         session.setAttribute("user", info);
 
 //        response.sendRedirect(redirectUrl);
-        String redirectUrlWithUserId = redirectUrl + "?sns=" + snsUserId;
-        response.sendRedirect(redirectUrlWithUserId);
+//        String redirectUrlWithUserId = redirectUrl + "?sns=" + snsUserId;
+//        response.sendRedirect(redirectUrlWithUserId);
 
-        User user = (User)session.getAttribute("user");
+//        User user = (User)session.getAttribute("user");
+//
+//        System.out.println("snsUser 세션에 저장 완료 : "+user);
+//        printSessionAttributes(session);
 
-        System.out.println("snsUser 세션에 저장 완료 : "+user);
-        printSessionAttributes(session);
-
-        Data data = new Data("success", info);
+        Data data = new Data("success", info, "로그인성공..");
         return data;
     }
 
@@ -85,7 +85,13 @@ public class userRestController {
     @GetMapping(value="getUser/{userId}")
     public Data getUser(@PathVariable String userId) {
         System.out.println("회원 정보 조회");
-        Data data = new Data("success", userService.getUser(userId));
+        User userInfo = null;
+        if(userService.getUser(userId) != null) {
+            userInfo = userService.getUser(userId);
+            userInfo.setFollowList(fanService.getFollowList(userId));
+        }
+        System.out.println("팔로우 리스트 추가");
+        Data data = new Data("success", userInfo);
         return data;
     }
 
@@ -311,6 +317,7 @@ public class userRestController {
     }
     @PostMapping ( value="addCoinHistory")
     public Data addCoinHistory(@RequestBody CoinHistroy coinHistroy){
+        System.out.println("코인 사용 내역 등록 완료"+coinHistroy.getCoin());
         userService.addCoinHistory(coinHistroy);
         Data data = new Data("success", "코인 사용내역 등록 완료.");
         return data;
@@ -336,11 +343,11 @@ public class userRestController {
         info.setBlackList(fanService.getBlackList(snsUserId));
 
         System.out.println("세션에 저장될 정보는 :: "+info);
-
+//
         session.setAttribute("user", info);
 //        response.sendRedirect(redirectUrl);
-        String redirectUrlWithUserId = redirectUrl + "?sns=" + snsUserId;
-        response.sendRedirect(redirectUrlWithUserId);
+//        String redirectUrlWithUserId = redirectUrl + "?sns=" + snsUserId;
+//        response.sendRedirect(redirectUrlWithUserId);
 
 //        String currentSessionId = session.getId();
 //        // 리다이렉션 URL에 세션 아이디를 파라미터로 추가
@@ -349,10 +356,10 @@ public class userRestController {
 //        // URL 재작성을 수행하여 컨텍스트 경로를 포함한 절대 경로로 리다이렉션
 //        String redirectUrlWithContext = request.getContextPath() + redirectUrl;
 //        response.sendRedirect(redirectUrlWithContext);
-        RequestDispatcher dispatcher = request.getRequestDispatcher(redirectUrl); // 전달할 페이지 경로
-        dispatcher.forward(request, response);
+//        RequestDispatcher dispatcher = request.getRequestDispatcher(redirectUrl); // 전달할 페이지 경로
+//        dispatcher.forward(request, response);
 
-        Data data = new Data("success",info);
+        Data data = new Data("success",info,"로그인 성공..");
         return data;
     }
 

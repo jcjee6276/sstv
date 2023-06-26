@@ -14,6 +14,33 @@ public class Vod {
     private int category;
     private int commentCount;
 
+    public String getHostNickName() {
+        return hostNickName;
+    }
+
+    public void setHostNickName(String hostNickName) {
+        this.hostNickName = hostNickName;
+    }
+
+    @Override
+    public String toString() {
+        return "Vod{" +
+                "vodNo=" + vodNo +
+                ", hostUserId='" + hostUserId + '\'' +
+                ", guestUserId='" + guestUserId + '\'' +
+                ", regDate=" + regDate +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", view=" + view +
+                ", fileName='" + fileName + '\'' +
+                ", category=" + category +
+                ", commentCount=" + commentCount +
+                ", hostNickName='" + hostNickName + '\'' +
+                '}';
+    }
+
+    private String hostNickName;
+
     public int getCommentCount() {
         return commentCount;
     }
@@ -96,19 +123,4 @@ public class Vod {
         this.category = category;
     }
 
-    @Override
-    public String toString() {
-        return "Vod{" +
-                "vodNo=" + vodNo +
-                ", hostUserId='" + hostUserId + '\'' +
-                ", guestUserId='" + guestUserId + '\'' +
-                ", regDate=" + regDate +
-                ", title='" + title + '\'' +
-                ", content='" + content + '\'' +
-                ", view=" + view +
-                ", fileName='" + fileName + '\'' +
-                ", category=" + category +
-                ", commentCount=" + commentCount +
-                '}';
-    }
 }

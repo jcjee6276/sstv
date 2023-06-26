@@ -23,7 +23,6 @@ public class User {
     private int totalStreamingAccumulatedTime;
     private int stRoll;
     private int userType;
-    private List<String> blackList;
 
     @Override
     public String toString() {
@@ -46,9 +45,22 @@ public class User {
                 ", stRoll=" + stRoll +
                 ", userType=" + userType +
                 ", blackList=" + blackList +
+                ", followList=" + followList +
                 ", followCount=" + followCount +
                 '}';
     }
+
+    private List<String> blackList;
+
+    public List<String> getFollowList() {
+        return followList;
+    }
+
+    public void setFollowList(List<String> followList) {
+        this.followList = followList;
+    }
+
+    private List<String> followList;
 
     public int getFollowCount() {
         return followCount;
